@@ -1,0 +1,738 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Assistant Médical IA</title>
+    <style>
+        /* Variables CSS pour le thème médical amélioré */
+        :root {
+            --ai-primary: #2563eb;
+            --ai-primary-dark: #1d4ed8;
+            --ai-primary-light: #93c5fd;
+            --ai-primary-gradient: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%);
+            --ai-secondary: #3b82f6;
+            --ai-accent: #10b981;
+            --ai-accent-light: #a7f3d0;
+            --ai-background: #ffffff;
+            --ai-surface: #f8fafc;
+            --ai-text: #1f2937;
+            --ai-text-light: #6b7280;
+            --ai-border: #e5e7eb;
+            --ai-shadow: 0 20px 60px rgba(0, 0, 0, 0.15);
+            --ai-shadow-hover: 0 25px 80px rgba(0, 0, 0, 0.2);
+            --ai-border-radius: 16px;
+            --ai-transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            --ai-font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
+        }
+
+        /* Reset et styles de base */
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: var(--ai-font-family);
+            color: var(--ai-text);
+            line-height: 1.5;
+        }
+
+        .sr-only {
+            position: absolute;
+            width: 1px;
+            height: 1px;
+            padding: 0;
+            margin: -1px;
+            overflow: hidden;
+            clip: rect(0, 0, 0, 0);
+            white-space: nowrap;
+            border: 0;
+        }
+
+        /* Bouton flottant amélioré */
+        .ai-chat-floating-btn {
+            position: fixed;
+            bottom: 24px;
+            right: 24px;
+            width: 64px;
+            height: 64px;
+            background: var(--ai-primary-gradient);
+            color: white;
+            border: none;
+            border-radius: 50%;
+            box-shadow: var(--ai-shadow);
+            cursor: pointer;
+            z-index: 1000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: var(--ai-transition);
+            overflow: hidden;
+        }
+
+        .ai-chat-floating-btn:hover {
+            transform: translateY(-4px) scale(1.05);
+            box-shadow: var(--ai-shadow-hover);
+        }
+
+        .ai-chat-btn-content {
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 100%;
+            height: 100%;
+        }
+
+        .ai-chat-btn-icon {
+            font-size: 1.75rem;
+            z-index: 2;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .ai-chat-btn-pulse-ring,
+        .ai-chat-btn-pulse-ring-delayed {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            background: var(--ai-primary);
+            opacity: 0.4;
+            animation: pulseRing 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+        }
+
+        .ai-chat-btn-pulse-ring-delayed {
+            animation-delay: 1s;
+        }
+
+        @keyframes pulseRing {
+            0% { transform: scale(1); opacity: 0.4; }
+            100% { transform: scale(1.8); opacity: 0; }
+        }
+
+        /* Container principal amélioré */
+        .ai-chat-container {
+            position: fixed;
+            bottom: 100px;
+            right: 24px;
+            width: 400px;
+            height: 560px;
+            background: var(--ai-background);
+            border-radius: var(--ai-border-radius);
+            box-shadow: var(--ai-shadow);
+            z-index: 1001;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            transform: translateY(20px) scale(0.95);
+            opacity: 0;
+            transition: var(--ai-transition);
+        }
+
+        .ai-chat-container-open {
+            transform: translateY(0) scale(1);
+            opacity: 1;
+        }
+
+        /* Header amélioré avec effet de verre (glassmorphism) */
+        .ai-chat-header {
+            background: linear-gradient(135deg, rgba(37, 99, 235, 0.95) 0%, rgba(29, 78, 216, 0.95) 100%);
+            color: white;
+            padding: 16px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .ai-chat-header-content {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .ai-chat-header-icon {
+            width: 42px;
+            height: 42px;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+        }
+
+        .ai-chat-title {
+            font-size: 16px;
+            font-weight: 600;
+            margin: 0;
+        }
+
+        .ai-chat-subtitle {
+            font-size: 12px;
+            opacity: 0.9;
+            margin: 0;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-weight: 400;
+        }
+
+        .status-dot {
+            width: 8px;
+            height: 8px;
+            background: #10b981;
+            border-radius: 50%;
+            animation: pulseDot 2s ease-in-out infinite;
+        }
+
+        @keyframes pulseDot {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+
+        .ai-chat-actions {
+            display: flex;
+            gap: 8px;
+        }
+
+        .ai-chat-action-btn {
+            background: rgba(255, 255, 255, 0.2);
+            border: none;
+            color: white;
+            width: 34px;
+            height: 34px;
+            border-radius: 10px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: var(--ai-transition);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+        }
+
+        .ai-chat-action-btn:hover {
+            background: rgba(255, 255, 255, 0.3);
+            transform: scale(1.1);
+        }
+
+        /* Messages améliorés */
+        .ai-chat-messages {
+            flex: 1;
+            padding: 20px;
+            overflow-y: auto;
+            background: var(--ai-surface);
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            scroll-behavior: smooth;
+        }
+
+        .ai-message {
+            display: flex;
+            gap: 12px;
+            animation: messageSlideIn 0.4s ease forwards;
+            opacity: 0;
+            transform: translateY(10px);
+        }
+
+        .ai-message-user {
+            flex-direction: row-reverse;
+        }
+
+        @keyframes messageSlideIn {
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .ai-message-avatar {
+            flex-shrink: 0;
+        }
+
+        .avatar-icon {
+            width: 36px;
+            height: 36px;
+            background: var(--ai-background);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 16px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+        }
+
+        .ai-message-content {
+            max-width: 75%;
+        }
+
+        .ai-message-bubble {
+            padding: 14px 18px;
+            border-radius: 20px;
+            position: relative;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+        }
+
+        .ai-message-user .ai-message-bubble {
+            background: var(--ai-primary);
+            color: white;
+            border-bottom-right-radius: 6px;
+        }
+
+        .ai-message-assistant .ai-message-bubble {
+            background: var(--ai-background);
+            color: var(--ai-text);
+            border: 1px solid var(--ai-border);
+            border-bottom-left-radius: 6px;
+        }
+
+        .ai-message-text {
+            margin: 0;
+            line-height: 1.5;
+            font-size: 14.5px;
+        }
+
+        .ai-message-time {
+            font-size: 11px;
+            opacity: 0.7;
+            margin-top: 6px;
+            display: block;
+            text-align: right;
+        }
+
+        /* Indicateur de chargement amélioré */
+        .ai-loading-indicator {
+            display: flex;
+            justify-content: flex-start;
+            margin: 8px 0;
+        }
+
+        .ai-loading-content {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 14px 18px;
+            background: var(--ai-background);
+            border-radius: 20px;
+            border: 1px solid var(--ai-border);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+        }
+
+        .ai-loading-dots {
+            display: flex;
+            gap: 4px;
+        }
+
+        .ai-loading-dot {
+            width: 8px;
+            height: 8px;
+            background: var(--ai-primary);
+            border-radius: 50%;
+            animation: loadingBounce 1.4s ease-in-out infinite both;
+        }
+
+        .ai-loading-dot:nth-child(1) { animation-delay: -0.32s; }
+        .ai-loading-dot:nth-child(2) { animation-delay: -0.16s; }
+
+        @keyframes loadingBounce {
+            0%, 80%, 100% {
+                transform: scale(0.8);
+                opacity: 0.5;
+            }
+            40% {
+                transform: scale(1);
+                opacity: 1;
+            }
+        }
+
+        .ai-loading-text {
+            font-size: 13px;
+            color: var(--ai-text-light);
+            font-weight: 500;
+        }
+
+        /* Zone de saisie améliorée */
+        .ai-chat-input-container {
+            padding: 20px;
+            background: var(--ai-background);
+            border-top: 1px solid var(--ai-border);
+        }
+
+        .ai-input-wrapper {
+            display: flex;
+            gap: 12px;
+            margin-bottom: 16px;
+            position: relative;
+        }
+
+        .ai-chat-input {
+            flex: 1;
+            padding: 14px 48px 14px 16px;
+            border: 2px solid var(--ai-border);
+            border-radius: 14px;
+            font-size: 14.5px;
+            outline: none;
+            transition: var(--ai-transition);
+            background: var(--ai-surface);
+            font-family: var(--ai-font-family);
+        }
+
+        .ai-chat-input:focus {
+            border-color: var(--ai-primary);
+            box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+        }
+
+        .ai-send-button {
+            position: absolute;
+            right: 6px;
+            bottom: 6px;
+            background: var(--ai-primary-gradient);
+            color: white;
+            border: none;
+            width: 36px;
+            height: 36px;
+            border-radius: 10px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: var(--ai-transition);
+        }
+
+        .ai-send-button:hover:not(:disabled) {
+            transform: scale(1.05);
+            box-shadow: 0 4px 12px rgba(37, 99, 235, 0.25);
+        }
+
+        .ai-send-button:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .send-icon {
+            font-size: 18px;
+            font-weight: bold;
+        }
+
+        /* Suggestions améliorées */
+        .ai-chat-suggestions {
+            text-align: center;
+        }
+
+        .suggestions-label {
+            font-size: 12px;
+            color: var(--ai-text-light);
+            margin-bottom: 10px;
+            display: block;
+            font-weight: 500;
+        }
+
+        .suggestions-buttons {
+            display: flex;
+            gap: 8px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .suggestion-chip {
+            background: var(--ai-surface);
+            color: var(--ai-primary);
+            border: 1px solid var(--ai-border);
+            padding: 8px 14px;
+            border-radius: 18px;
+            font-size: 12px;
+            cursor: pointer;
+            transition: var(--ai-transition);
+            font-weight: 500;
+        }
+
+        .suggestion-chip:hover {
+            background: var(--ai-primary);
+            color: white;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(37, 99, 235, 0.2);
+        }
+
+        /* Overlay amélioré */
+        .ai-chat-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.2);
+            z-index: 999;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+            backdrop-filter: blur(4px);
+            -webkit-backdrop-filter: blur(4px);
+        }
+
+        .ai-chat-overlay-open {
+            opacity: 1;
+        }
+
+        /* Scrollbar personnalisée améliorée */
+        .ai-chat-messages::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        .ai-chat-messages::-webkit-scrollbar-track {
+            background: rgba(0, 0, 0, 0.05);
+            border-radius: 4px;
+        }
+
+        .ai-chat-messages::-webkit-scrollbar-thumb {
+            background: rgba(0, 0, 0, 0.2);
+            border-radius: 4px;
+        }
+
+        .ai-chat-messages::-webkit-scrollbar-thumb:hover {
+            background: rgba(0, 0, 0, 0.3);
+        }
+
+        /* Animation d'ouverture */
+        @keyframes chatAppear {
+            0% {
+                opacity: 0;
+                transform: translateY(20px) scale(0.95);
+            }
+            100% {
+                opacity: 1;
+                transform: translateY(0) scale(1);
+            }
+        }
+
+        /* Responsive amélioré */
+        @media (max-width: 480px) {
+            .ai-chat-container {
+                width: 92vw;
+                right: 4vw;
+                bottom: 80px;
+                height: 70vh;
+                max-height: 600px;
+                border-radius: 20px 20px 0 0;
+            }
+            
+            .ai-chat-floating-btn {
+                bottom: 20px;
+                right: 20px;
+                width: 60px;
+                height: 60px;
+            }
+            
+            .ai-message-content {
+                max-width: 82%;
+            }
+            
+            .ai-chat-header {
+                padding: 14px 16px;
+            }
+            
+            .ai-chat-messages {
+                padding: 16px;
+            }
+            
+            .ai-chat-input-container {
+                padding: 16px;
+            }
+        }
+
+        /* États de focus accessibles */
+        button:focus-visible,
+        input:focus-visible {
+            outline: 2px solid var(--ai-primary);
+            outline-offset: 2px;
+        }
+
+        /* Mode sombre optionnel (peut être activé via JavaScript) */
+        .ai-dark-mode {
+            --ai-background: #1f2937;
+            --ai-surface: #374151;
+            --ai-text: #f9fafb;
+            --ai-text-light: #d1d5db;
+            --ai-border: #4b5563;
+            --ai-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            --ai-shadow-hover: 0 25px 80px rgba(0, 0, 0, 0.4);
+        }
+    </style>
+</head>
+<body>
+    <!-- Bouton flottant Chat - Design moderne amélioré -->
+    <button (click)="toggleChat()" 
+            class="ai-chat-floating-btn"
+            [class.ai-chat-btn-pulse]="!isChatOpen"
+            aria-label="Ouvrir l'assistant IA">
+        <div class="ai-chat-btn-content">
+            <span class="ai-chat-btn-icon">🤖</span>
+            <span class="ai-chat-btn-pulse-ring"></span>
+            <span class="ai-chat-btn-pulse-ring-delayed"></span>
+        </div>
+        <span class="sr-only">Ouvrir l'assistant IA</span>
+    </button>
+
+    <!-- Fenêtre de Chat - Design professionnel amélioré -->
+    <div *ngIf="isChatOpen" 
+         class="ai-chat-container"
+         [class]="isChatOpen ? 'ai-chat-container-open' : ''"
+         role="dialog"
+         aria-labelledby="ai-chat-title"
+         aria-modal="true">
+
+        <!-- Header avec gradient médical amélioré -->
+        <div class="ai-chat-header">
+            <div class="ai-chat-header-content">
+                <div class="ai-chat-header-icon">
+                    <span class="ai-icon" aria-hidden="true">⚕️</span>
+                </div>
+                <div class="ai-chat-header-info">
+                    <h3 id="ai-chat-title" class="ai-chat-title">Assistant Médical IA</h3>
+                    <p class="ai-chat-subtitle">
+                        <span class="status-dot" aria-hidden="true"></span>
+                        En ligne • Prêt à vous aider
+                    </p>
+                </div>
+            </div>
+            <div class="ai-chat-actions">
+                <button (click)="clearChat()" 
+                        class="ai-chat-action-btn"
+                        title="Nouvelle conversation"
+                        aria-label="Nouvelle conversation">
+                    <span class="action-icon" aria-hidden="true">🔄</span>
+                </button>
+                <button (click)="toggleChat()" 
+                        class="ai-chat-action-btn ai-chat-close-btn"
+                        title="Fermer"
+                        aria-label="Fermer l'assistant">
+                    <span class="action-icon" aria-hidden="true">✕</span>
+                </button>
+            </div>
+        </div>
+
+        <!-- Messages avec design conversationnel amélioré -->
+        <div #chatContainer class="ai-chat-messages">
+            <div *ngFor="let message of messages; let i = index" 
+                 class="ai-message"
+                 [class]="'ai-message-' + message.role"
+                 [style.animation-delay]="i * 0.05 + 's'">
+                
+                <div class="ai-message-avatar">
+                    <span class="avatar-icon" aria-hidden="true">
+                        {{ message.role === 'user' ? '👤' : '⚕️' }}
+                    </span>
+                </div>
+                
+                <div class="ai-message-content">
+                    <div class="ai-message-bubble">
+                        <p class="ai-message-text">{{ message.content }}</p>
+                        <span class="ai-message-time">
+                            {{ message.timestamp | date:'HH:mm' }}
+                        </span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Indicateur de chargement sophistiqué amélioré -->
+            <div *ngIf="isLoading" class="ai-loading-indicator">
+                <div class="ai-loading-content">
+                    <div class="ai-loading-dots">
+                        <div class="ai-loading-dot"></div>
+                        <div class="ai-loading-dot"></div>
+                        <div class="ai-loading-dot"></div>
+                    </div>
+                    <span class="ai-loading-text">L'assistant réfléchit...</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Zone de saisie améliorée -->
+        <div class="ai-chat-input-container">
+            <div class="ai-input-wrapper">
+                <input [(ngModel)]="userInput" 
+                       (keyup.enter)="sendMessage()"
+                       placeholder="Posez votre question médicale..."
+                       class="ai-chat-input"
+                       [disabled]="isLoading"
+                       #messageInput
+                       aria-label="Votre message">
+                
+                <button (click)="sendMessage()" 
+                        [disabled]="!userInput.trim() || isLoading"
+                        class="ai-send-button"
+                        aria-label="Envoyer le message">
+                    <span class="send-icon" aria-hidden="true">↵</span>
+                </button>
+            </div>
+            
+            <div class="ai-chat-suggestions">
+                <span class="suggestions-label">💡 Suggestions rapides :</span>
+                <div class="suggestions-buttons">
+                    <button (click)="userInput = 'Comment prendre RDV ?'; sendMessage()" 
+                            class="suggestion-chip"
+                            aria-label="Demander comment prendre rendez-vous">
+                        Prendre RDV
+                    </button>
+                    <button (click)="userInput = 'Spécialités disponibles'; sendMessage()" 
+                            class="suggestion-chip"
+                            aria-label="Demander les spécialités disponibles">
+                        Spécialités
+                    </button>
+                    <button (click)="userInput = 'Contact urgence'; sendMessage()" 
+                            class="suggestion-chip"
+                            aria-label="Demander les contacts d'urgence">
+                        Urgence
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Overlay avec animation améliorée -->
+    <div *ngIf="isChatOpen" 
+         (click)="toggleChat()"
+         class="ai-chat-overlay"
+         [class]="isChatOpen ? 'ai-chat-overlay-open' : ''"
+         aria-hidden="true"></div>
+
+    <script>
+        // Script minimal pour la démonstration
+        document.addEventListener('DOMContentLoaded', function() {
+            const chatBtn = document.querySelector('.ai-chat-floating-btn');
+            const chatContainer = document.querySelector('.ai-chat-container');
+            const overlay = document.querySelector('.ai-chat-overlay');
+            let isChatOpen = false;
+            
+            function toggleChat() {
+                isChatOpen = !isChatOpen;
+                if (isChatOpen) {
+                    chatContainer.classList.add('ai-chat-container-open');
+                    overlay.classList.add('ai-chat-overlay-open');
+                } else {
+                    chatContainer.classList.remove('ai-chat-container-open');
+                    overlay.classList.remove('ai-chat-overlay-open');
+                }
+            }
+            
+            chatBtn.addEventListener('click', toggleChat);
+            overlay.addEventListener('click', toggleChat);
+            
+            // Fermer avec la touche Échap
+            document.addEventListener('keydown', function(e) {
+                if (e.key === 'Escape' && isChatOpen) {
+                    toggleChat();
+                }
+            });
+        });
+    </script>
+</body>
+</html>

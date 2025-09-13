@@ -1,0 +1,48 @@
+<div class="login-wrapper">
+  <div class="login-card">
+    <div class="login-header">
+      <h3>🔑 Connexion</h3>
+      <p class="subtitle">Accédez à votre espace sécurisé</p>
+    </div>
+    <div class="login-body">
+      <form (ngSubmit)="onSubmit()" #loginForm="ngForm">
+
+        <!-- Email -->
+        <div class="mb-3 input-group">
+          <span class="input-icon">
+            <i class="bi bi-envelope"></i>
+          </span>
+          <input type="email" class="form-control" id="email"
+                 [(ngModel)]="credentials.email" name="email" required email
+                 placeholder="Adresse e-mail">
+        </div>
+
+        <!-- Password -->
+        <div class="mb-3 input-group">
+          <span class="input-icon">
+            <i class="bi bi-lock"></i>
+          </span>
+          <input type="password" class="form-control" id="password"
+                 [(ngModel)]="credentials.password" name="password" required
+                 placeholder="Mot de passe">
+        </div>
+
+        <!-- Error -->
+        <div *ngIf="error" class="alert alert-danger text-center">
+          {{ error }}
+        </div>
+
+        <!-- Button -->
+        <button type="submit" class="btn-primary w-100" [disabled]="loading">
+          <span *ngIf="loading" class="spinner-border spinner-border-sm me-2"></span>
+          Se connecter
+        </button>
+
+        <!-- Register -->
+        <div class="text-center mt-3">
+          <p>Pas de compte ? <a routerLink="/register">Créer un compte</a></p>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>

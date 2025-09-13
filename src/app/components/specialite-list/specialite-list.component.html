@@ -1,0 +1,41 @@
+<div class="container mt-4">
+  <h2>Liste des Spécialités Médicales</h2>
+
+  <!-- Loading -->
+  <div *ngIf="loading" class="text-center">
+    <div class="spinner-border text-primary" role="status">
+      <span class="visually-hidden">Chargement...</span>
+    </div>
+    <p>Chargement des spécialités...</p>
+  </div>
+
+  <!-- Error -->
+  <div *ngIf="error && !loading" class="alert alert-danger">
+    {{ error }}
+  </div>
+
+  <!-- Specialites List -->
+  <div *ngIf="!loading && !error">
+    <div *ngIf="specialites.length === 0" class="alert alert-info">
+      Aucune spécialité disponible.
+    </div>
+
+    <div class="row">
+      <div class="col-md-6 col-lg-4 mb-3" *ngFor="let specialite of specialites">
+        <div class="card h-100">
+          <div class="card-body">
+            <h5 class="card-title">{{ specialite.nom }}</h5>
+            <p class="card-text" *ngIf="specialite.description">
+              {{ specialite.description | slice:0:100 }}{{ specialite.description.length > 100 ? '...' : '' }}
+            </p>
+          </div>
+          <div class="card-footer">
+            <small class="text-muted">
+              Créé le {{ specialite.created_at | date:'dd/MM/yyyy' }}
+            </small>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

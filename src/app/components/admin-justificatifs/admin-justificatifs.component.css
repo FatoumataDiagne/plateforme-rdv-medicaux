@@ -1,0 +1,156 @@
+.admin-container {
+  padding: 30px 20px;
+  max-width: 1400px;
+  margin: 0 auto;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  background-color: #f8f9fa;
+}
+
+.page-title {
+  color: #1b2cc1;
+  font-weight: 700;
+  margin-bottom: 2rem;
+  padding-bottom: 0.7rem;
+  border-bottom: 3px solid #4361ee;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.stats-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 25px;
+  margin-bottom: 35px;
+}
+
+.stat-card {
+  background: #fff;
+  border-radius: 15px;
+  padding: 20px 25px;
+  box-shadow: 0 12px 25px rgba(0, 0, 0, 0.08);
+  display: flex;
+  align-items: center;
+  transition: all 0.3s ease;
+}
+
+.stat-card:hover {
+  transform: translateY(-7px);
+  box-shadow: 0 15px 30px rgba(0, 0, 0, 0.12);
+}
+
+.stat-primary {
+  border-left: 5px solid #4361ee;
+}
+
+.stat-success {
+  border-left: 5px solid #4cc9f0;
+}
+
+.stat-info {
+  border-left: 5px solid #4895ef;
+}
+
+.stat-icon {
+  font-size: 2.8rem;
+  margin-right: 18px;
+  width: 70px;
+  text-align: center;
+  color: #4361ee;
+}
+
+.stat-success .stat-icon {
+  color: #4cc9f0;
+}
+
+.stat-info .stat-icon {
+  color: #4895ef;
+}
+
+.stat-value {
+  font-size: 2.2rem;
+  font-weight: 700;
+  margin: 0;
+  line-height: 1;
+}
+
+.stat-title {
+  color: #6c757d;
+  margin-top: 5px;
+  font-size: 0.95rem;
+}
+
+.card {
+  border-radius: 15px;
+  box-shadow: 0 10px 25px rgba(0,0,0,0.05);
+}
+
+.card-header {
+  background-color: #fff;
+  border-bottom: 1px solid #e9ecef;
+  font-weight: 600;
+}
+
+.table th {
+  background-color: #e9f0ff;
+  color: #1b2cc1;
+  font-weight: 600;
+}
+
+.table-hover tbody tr:hover {
+  background-color: #f1f5ff;
+}
+
+.badge {
+  padding: 7px 14px;
+  border-radius: 25px;
+  font-weight: 600;
+  font-size: 0.9rem;
+}
+
+.pagination-container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 25px;
+  padding: 15px 0;
+  flex-wrap: wrap;
+}
+
+.pagination-info {
+  color: #6c757d;
+}
+
+.pagination .page-item .page-link {
+  color: #4361ee;
+  border-radius: 50%;
+  margin: 0 3px;
+  transition: all 0.3s;
+}
+
+.pagination .page-item.active .page-link {
+  background-color: #4361ee;
+  color: #fff;
+  border: none;
+}
+
+.pagination .page-item.disabled .page-link {
+  color: #adb5bd;
+}
+
+@media (max-width: 768px) {
+  .stats-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .pagination-container {
+    flex-direction: column;
+    gap: 15px;
+  }
+
+  .card-header .d-flex {
+    flex-direction: column;
+    gap: 12px;
+    align-items: flex-start !important;
+  }
+}

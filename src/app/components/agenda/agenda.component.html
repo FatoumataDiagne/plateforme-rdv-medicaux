@@ -1,0 +1,109 @@
+<div class="agenda-container">
+  <div class="agenda-header">
+    <h1><i class="fas fa-calendar-alt"></i> Agenda du Médecin</h1>
+    <p>Gérez vos rendez-vous et consultations</p>
+  </div>
+  
+  <!-- Filtres par date -->
+  <div class="filter-card">
+    <div class="filter-header">
+      <i class="fas fa-filter"></i>
+      <h3>Filtrer par période</h3>
+    </div>
+    <form (ngSubmit)="chargerAgenda()" class="filter-form">
+      <div class="form-group">
+        <label for="dateDebut" class="form-label">
+          <i class="fas fa-calendar-day"></i> Date de début
+        </label>
+        <input type="date" class="form-control" id="dateDebut" [(ngModel)]="dateDebut" name="dateDebut" required>
+      </div>
+      <div class="form-group">
+        <label for="dateFin" class="form-label">
+          <i class="fas fa-calendar-week"></i> Date de fin
+        </label>
+        <input type="date" class="form-control" id="dateFin" [(ngModel)]="dateFin" name="dateFin" required>
+      </div>
+      <button type="submit" class="filter-btn">
+        <i class="fas fa-search"></i> Appliquer le filtre
+      </button>
+    </form>
+  </div>
+
+  <!-- Liste des rendez-vous -->
+  <div class="appointments-card">
+    <div class="appointments-header">
+      <h3><i class="fas fa-list"></i> Rendez-vous programmés</h3>
+      <span class="badge count-badge">{{rendezVous.length}} RDV</span>
+    </div>
+    
+    <div class="appointments-body">
+      <div *ngIf="chargement" class="loading-state">
+        <div class="spinner"></div>
+        <p>Chargement des rendez-vous...</p>
+      </div>
+
+      <div *ngIf="erreur" class="error-state">
+        <i class="fas fa-exclamation-circle"></i>
+        <p>{{ erreur }}</p>
+      </div>
+
+      <div *ngIf="!chargement && !erreur">
+        <div *ngIf="rendezVous.length === 0" class="empty-state">
+          <i class="fas fa-calendar-times"></i>
+          <h4>Aucun rendez-vous pour cette période</h4>
+          <p>Modifiez les dates de filtre pour voir plus de rendez-vous</p>
+        </div>
+
+        <div *ngIf="rendezVous.length > 0" class="appointments-list">
+          <div class="appointment-item" *ngFor="let rdv of rendezVous">
+            <div class="appointment-time">
+              <div class="date">{{ rdv.date | date:'dd MMM' }}</div>
+              <div class="time">{{ rdv.heure_debut }} - {{ rdv.heure_fin }}</div>
+            </div>
+            
+            <div class="appointment-info">
+              <div class="patient-info">
+                <h4>
+                  {{ rdv.patient?.prenom }} {{ rdv.patient?.nom }}
+                  <span *ngIf="!rdv.patient?.prenom && !rdv.patient?.nom" class="patient-missing">
+                    (Patient non trouvé)
+                  </span>
+                </h4>
+                <p *ngIf="rdv.patient?.telephone">
+                  <i class="fas fa-phone"></i> {{ rdv.patient.telephone }}
+                </p>
+              </div>
+              
+              <div class="specialty">
+                <i class="fas fa-stethoscope"></i> 
+                {{ rdv.specialite?.nom || 'Non spécifié' }}
+              </div>
+            </div>
+            
+            <div class="appointment-status">
+              <span class="status-badge" [ngClass]="{
+                'status-waiting': rdv.statut === 'en_attente',
+                'status-confirmed': rdv.statut === 'confirmé',
+                'status-cancelled': rdv.statut === 'annulé'
+              }">
+                <i [class]="{
+                  'fas fa-clock': rdv.statut === 'en_attente',
+                  'fas fa-check-circle': rdv.statut === 'confirmé',
+                  'fas fa-times-circle': rdv.statut === 'annulé'
+                }"></i>
+                {{ rdv.statut }}
+              </span>
+            </div>
+            
+            <div class="appointment-actions">
+              <button class="action-btn justify" (click)="genererJustificatif(rdv.id)">
+                <i class="fas fa-file-pdf"></i>
+                Justificatif
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

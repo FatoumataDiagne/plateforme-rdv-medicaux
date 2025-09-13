@@ -1,0 +1,498 @@
+/* Variables de couleurs */
+:root {
+  --primary: #3498db;
+  --primary-dark: #2980b9;
+  --secondary: #2ecc71;
+  --danger: #e74c3c;
+  --warning: #f39c12;
+  --light-bg: #f8f9fa;
+  --dark-text: #2c3e50;
+  --light-text: #7f8c8d;
+  --border-color: #e0e6ed;
+  --card-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+  --success-bg: #d4edda;
+  --success-text: #155724;
+  --error-bg: #f8d7da;
+  --error-text: #721c24;
+}
+
+/* Styles généraux */
+.confirmations-container {
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 20px;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  color: var(--dark-text);
+  position: relative;
+}
+
+.confirmations-header {
+  text-align: center;
+  margin-bottom: 30px;
+  padding: 20px 0;
+}
+
+.confirmations-header h1 {
+  color: var(--primary);
+  font-size: 2.2rem;
+  margin-bottom: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+}
+
+.confirmations-header p {
+  color: var(--light-text);
+  font-size: 1.1rem;
+}
+
+/* Messages d'alerte */
+.alert-message {
+  padding: 15px 20px;
+  border-radius: 8px;
+  margin-bottom: 25px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.alert-message.success {
+  background-color: var(--success-bg);
+  color: var(--success-text);
+  border-left: 4px solid var(--secondary);
+}
+
+.alert-message.error {
+  background-color: var(--error-bg);
+  color: var(--error-text);
+  border-left: 4px solid var(--danger);
+}
+
+/* Carte principale */
+.confirmations-card {
+  background: white;
+  border-radius: 12px;
+  box-shadow: var(--card-shadow);
+  margin-bottom: 30px;
+  overflow: hidden;
+}
+
+.card-header {
+  background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+  color: white;
+  padding: 20px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.card-header h3 {
+  margin: 0;
+  font-weight: 600;
+  flex-grow: 1;
+}
+
+.count-badge {
+  background: rgba(255, 255, 255, 0.2);
+  padding: 6px 12px;
+  border-radius: 20px;
+  font-size: 0.9rem;
+  font-weight: 600;
+}
+
+.card-body {
+  padding: 25px;
+}
+
+/* État vide */
+.empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 40px 20px;
+  text-align: center;
+  color: var(--light-text);
+}
+
+.empty-state i {
+  font-size: 4rem;
+  margin-bottom: 15px;
+  opacity: 0.5;
+}
+
+.empty-state h4 {
+  margin: 0 0 10px 0;
+  color: var(--dark-text);
+}
+
+/* Tableau des rendez-vous */
+.rdv-table {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0;
+}
+
+.rdv-table th {
+  background-color: #f8f9fa;
+  padding: 15px;
+  text-align: left;
+  font-weight: 600;
+  color: var(--dark-text);
+  border-bottom: 2px solid var(--border-color);
+}
+
+.rdv-table td {
+  padding: 20px 15px;
+  border-bottom: 1px solid var(--border-color);
+  vertical-align: top;
+}
+
+.rdv-row {
+  transition: all 0.3s ease;
+}
+
+.rdv-row:hover {
+  background-color: #f8f9fa;
+}
+
+/* Cellules spécifiques */
+.patient-cell {
+  min-width: 250px;
+}
+
+.datetime-cell {
+  min-width: 180px;
+}
+
+.specialty-cell {
+  min-width: 150px;
+}
+
+.payment-cell {
+  min-width: 120px;
+}
+
+.actions-cell {
+  min-width: 250px;
+}
+
+/* Informations patient */
+.patient-info {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.patient-name {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-weight: 600;
+}
+
+.patient-missing {
+  color: var(--danger);
+  font-weight: normal;
+  font-size: 0.9rem;
+}
+
+.patient-contact {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.contact-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.9rem;
+  color: var(--light-text);
+}
+
+/* Date et heure */
+.rdv-datetime {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.rdv-date, .rdv-time {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+/* Spécialité */
+.rdv-specialty {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+/* Statut paiement */
+.payment-badge {
+  padding: 8px 12px;
+  border-radius: 20px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.payment-pending {
+  background: #fff3cd;
+  color: #856404;
+}
+
+.payment-paid {
+  background: #d4edda;
+  color: #155724;
+}
+
+.payment-refunded {
+  background: #f8d7da;
+  color: #721c24;
+}
+
+/* Actions */
+.rdv-actions {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.action-btn {
+  padding: 8px 12px;
+  border: none;
+  border-radius: 6px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 0.9rem;
+}
+
+.action-btn.confirm {
+  background: var(--secondary);
+  color: white;
+}
+
+.action-btn.confirm:hover {
+  background: #27ae60;
+  transform: translateY(-2px);
+}
+
+.action-btn.refuse {
+  background: var(--danger);
+  color: white;
+}
+
+.action-btn.refuse:hover {
+  background: #c0392b;
+  transform: translateY(-2px);
+}
+
+.action-btn.justify {
+  background: var(--primary);
+  color: white;
+}
+
+.action-btn.justify:hover {
+  background: var(--primary-dark);
+  transform: translateY(-2px);
+}
+
+/* Modal personnalisé */
+.modal-backdrop {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  z-index: 1040;
+}
+
+.refus-modal {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%) scale(0.9);
+  opacity: 0;
+  visibility: hidden;
+  z-index: 1050;
+  width: 90%;
+  max-width: 500px;
+  transition: all 0.3s ease;
+}
+
+.refus-modal.active {
+  transform: translate(-50%, -50%) scale(1);
+  opacity: 1;
+  visibility: visible;
+}
+
+.modal-content {
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+  overflow: hidden;
+}
+
+.modal-header {
+  background: linear-gradient(135deg, var(--danger) 0%, #c0392b 100%);
+  color: white;
+  padding: 20px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  position: relative;
+}
+
+.modal-header h3 {
+  margin: 0;
+  flex-grow: 1;
+}
+
+.close-btn {
+  background: none;
+  border: none;
+  color: white;
+  font-size: 1.2rem;
+  cursor: pointer;
+  padding: 5px;
+  border-radius: 50%;
+  width: 30px;
+  height: 30px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.close-btn:hover {
+  background: rgba(255, 255, 255, 0.2);
+}
+
+.modal-body {
+  padding: 25px;
+}
+
+.modal-body p {
+  margin-bottom: 15px;
+  color: var(--dark-text);
+}
+
+.modal-form {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.modal-form .form-control {
+  padding: 12px 15px;
+  border: 1px solid var(--border-color);
+  border-radius: 8px;
+  font-size: 1rem;
+  transition: all 0.3s ease;
+  font-family: inherit;
+}
+
+.modal-form .form-control:focus {
+  outline: none;
+  border-color: var(--primary);
+  box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.2);
+}
+
+.modal-footer {
+  padding: 20px 25px;
+  border-top: 1px solid var(--border-color);
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+}
+
+.modal-btn {
+  padding: 10px 20px;
+  border: none;
+  border-radius: 6px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.modal-btn.cancel {
+  background: var(--light-bg);
+  color: var(--dark-text);
+}
+
+.modal-btn.cancel:hover {
+  background: #e9ecef;
+}
+
+.modal-btn.refuse {
+  background: var(--danger);
+  color: white;
+}
+
+.modal-btn.refuse:hover {
+  background: #c0392b;
+}
+
+/* Responsive */
+@media (max-width: 992px) {
+  .rdv-table {
+    display: block;
+    overflow-x: auto;
+  }
+  
+  .rdv-actions {
+    flex-direction: column;
+  }
+}
+
+@media (max-width: 768px) {
+  .confirmations-container {
+    padding: 15px;
+  }
+  
+  .rdv-table th,
+  .rdv-table td {
+    padding: 12px 8px;
+  }
+  
+  .patient-name,
+  .contact-item,
+  .rdv-date,
+  .rdv-time,
+  .rdv-specialty {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 5px;
+  }
+  
+  .confirmations-header h1 {
+    font-size: 1.8rem;
+  }
+  
+  .modal-footer {
+    flex-direction: column;
+  }
+  
+  .modal-btn {
+    width: 100%;
+    justify-content: center;
+  }
+  
+  .refus-modal {
+    width: 95%;
+  }
+}

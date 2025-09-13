@@ -1,0 +1,573 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Prendre un Rendez-vous Médical</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&family=Open+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary-color: #3498db;
+            --primary-dark: #2980b9;
+            --secondary-color: #6c757d;
+            --accent-color: #f8f9fa;
+            --success-color: #2ecc71;
+            --warning-color: #f39c12;
+            --danger-color: #e74c3c;
+            --light-color: #f8f9fa;
+            --dark-color: #343a40;
+            --gradient-primary: linear-gradient(135deg, #3498db 0%, #2980b9 100%);
+            --gradient-success: linear-gradient(135deg, #2ecc71 0%, #27ae60 100%);
+            --border-radius: 12px;
+            --box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+            --transition: all 0.3s ease;
+        }
+
+        body {
+            font-family: 'Open Sans', sans-serif;
+            background-color: #f5f7fa;
+            color: #4a5568;
+            padding-bottom: 2rem;
+        }
+
+        h1, h2, h3, h4, h5, h6, .card-title {
+            font-family: 'Montserrat', sans-serif;
+            font-weight: 600;
+        }
+
+        .card {
+            border: none;
+            border-radius: var(--border-radius);
+            box-shadow: var(--box-shadow);
+            overflow: hidden;
+            transition: var(--transition);
+        }
+
+        .card:hover {
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.12);
+        }
+
+        .card-header {
+            background: var(--gradient-primary);
+            color: white;
+            font-weight: 600;
+            border-top-left-radius: var(--border-radius) !important;
+            border-top-right-radius: var(--border-radius) !important;
+            padding: 1.2rem 2rem;
+        }
+
+        .card-body {
+            padding: 2rem;
+        }
+
+        .section-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 1.5rem;
+            padding-bottom: 0.75rem;
+            border-bottom: 2px solid rgba(52, 152, 219, 0.2);
+        }
+
+        .section-icon {
+            background: var(--gradient-primary);
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 12px;
+            color: white;
+        }
+
+        .form-section {
+            background: white;
+            border-radius: var(--border-radius);
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.03);
+            border: 1px solid rgba(0, 0, 0, 0.05);
+            transition: var(--transition);
+        }
+
+        .form-section:hover {
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.06);
+        }
+
+        .form-label {
+            font-weight: 600;
+            color: #2d3748;
+            margin-bottom: 0.5rem;
+        }
+
+        .form-control, .form-select {
+            border-radius: 8px;
+            border: 1px solid #e2e8f0;
+            padding: 0.75rem 1rem;
+            transition: var(--transition);
+            background-color: #fff;
+        }
+
+        .form-control:focus, .form-select:focus {
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 0.25rem rgba(52, 152, 219, 0.15);
+        }
+
+        .btn-primary {
+            background: var(--gradient-primary);
+            border: none;
+            border-radius: 10px;
+            font-weight: 600;
+            padding: 0.875rem 2rem;
+            font-size: 1.1rem;
+            transition: var(--transition);
+            box-shadow: 0 4px 10px rgba(52, 152, 219, 0.25);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(52, 152, 219, 0.35);
+        }
+
+        .alert {
+            border-radius: 10px;
+            font-weight: 500;
+            padding: 1rem 1.5rem;
+            border: none;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+        }
+
+        .alert-danger {
+            background-color: #feeaea;
+            color: var(--danger-color);
+        }
+
+        .alert-success {
+            background-color: #e6f7ee;
+            color: var(--success-color);
+        }
+
+        .alert-info {
+            background-color: #e3f2fd;
+            color: var(--primary-color);
+        }
+
+        .alert-warning {
+            background-color: #fff4e5;
+            color: var(--warning-color);
+        }
+
+        .spinner-border {
+            width: 1.5rem;
+            height: 1.5rem;
+        }
+
+        .doctor-card {
+            border-radius: 10px;
+            border: 1px solid #e2e8f0;
+            padding: 1rem;
+            margin-bottom: 0.75rem;
+            transition: var(--transition);
+            cursor: pointer;
+        }
+
+        .doctor-card:hover, .doctor-card.selected {
+            border-color: var(--primary-color);
+            background-color: rgba(52, 152, 219, 0.05);
+            transform: translateY(-2px);
+        }
+
+        .doctor-name {
+            font-weight: 600;
+            color: #2d3748;
+        }
+
+        .doctor-specialty {
+            color: var(--secondary-color);
+            font-size: 0.9rem;
+        }
+
+        .doctor-price {
+            font-weight: 600;
+            color: var(--primary-color);
+        }
+
+        .time-slot {
+            display: inline-block;
+            padding: 0.5rem 1rem;
+            margin: 0.25rem;
+            border-radius: 6px;
+            background-color: #edf2f7;
+            border: 1px solid #e2e8f0;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .time-slot:hover, .time-slot.selected {
+            background-color: var(--primary-color);
+            color: white;
+            border-color: var(--primary-color);
+        }
+
+        .payment-option {
+            border-radius: 10px;
+            border: 1px solid #e2e8f0;
+            padding: 1rem;
+            margin-bottom: 0.75rem;
+            transition: var(--transition);
+            cursor: pointer;
+        }
+
+        .payment-option:hover, .payment-option.selected {
+            border-color: var(--primary-color);
+            background-color: rgba(52, 152, 219, 0.05);
+        }
+
+        .card-footer {
+            background-color: #f8f9fa;
+            border-top: 1px solid #e9ecef;
+            padding: 1rem 2rem;
+        }
+
+        .sticky-summary {
+            position: sticky;
+            top: 2rem;
+            border-radius: var(--border-radius);
+            padding: 1.5rem;
+            background: white;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+        }
+
+        .summary-item {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 0.75rem;
+            padding-bottom: 0.75rem;
+            border-bottom: 1px solid #e2e8f0;
+        }
+
+        .summary-label {
+            color: var(--secondary-color);
+        }
+
+        .summary-value {
+            font-weight: 600;
+        }
+
+        .price-total {
+            font-size: 1.25rem;
+            color: var(--primary-color);
+            font-weight: 700;
+        }
+
+        @media (max-width: 768px) {
+            .card-body {
+                padding: 1.5rem;
+            }
+            
+            .sticky-summary {
+                position: relative;
+                top: 0;
+                margin-bottom: 2rem;
+            }
+        }
+    </style>
+</head>
+<body>
+<div class="container my-5">
+  <div class="row justify-content-center">
+    <div class="col-lg-10 col-md-12">
+      <div class="card">
+        <div class="card-header">
+          <h3 class="card-title mb-0">
+            <i class="fas fa-calendar-plus me-2"></i>
+            Prendre un Rendez-vous Médical
+          </h3>
+        </div>
+
+        <div class="card-body">
+          <!-- Messages d'alerte -->
+          <div *ngIf="error" class="alert alert-danger alert-dismissible fade show" role="alert">
+            <i class="fas fa-exclamation-triangle me-2"></i>
+            {{ error }}
+            <button type="button" class="btn-close" (click)="error = ''"></button>
+          </div>
+
+          <div *ngIf="success" class="alert alert-success alert-dismissible fade show" role="alert">
+            <i class="fas fa-check-circle me-2"></i>
+            {{ success }}
+            <button type="button" class="btn-close" (click)="success = ''"></button>
+          </div>
+
+          <!-- Loading -->
+          <div *ngIf="loading" class="text-center py-4">
+            <div class="spinner-border text-primary" role="status">
+              <span class="visually-hidden">Chargement...</span>
+            </div>
+            <p class="text-muted mt-2">Chargement des données...</p>
+          </div>
+
+          <!-- Formulaire principal -->
+          <form #appointmentForm="ngForm" (ngSubmit)="onSubmit()" *ngIf="!loading">
+            <div class="row">
+              <div class="col-lg-8">
+          <!-- Section Informations Patient -->
+<div class="form-section">
+  <div class="section-header">
+    <div class="section-icon">
+      <i class="fas fa-user"></i>
+    </div>
+    <h5 class="mb-0">Informations Patient</h5>
+  </div>
+
+  <div *ngIf="patients.length > 0">
+    <label class="form-label">Patient</label>
+    <div class="d-flex align-items-center bg-light rounded-3 p-3">
+      <div class="bg-primary rounded-circle d-flex align-items-center justify-content-center me-3" style="width: 40px; height: 40px;">
+        <i class="fas fa-user text-white"></i>
+      </div>
+      <div>
+        <h6 class="mb-0">{{ patients[0].prenom }} {{ patients[0].nom }}</h6>
+        <small class="text-muted">Vous êtes le patient pour ce rendez-vous</small>
+      </div>
+    </div>
+    <input type="hidden" [(ngModel)]="formData.patient_id" name="patient_id">
+  </div>
+
+  <div *ngIf="patients.length === 0" class="alert alert-warning mt-3">
+    <i class="fas fa-exclamation-triangle me-2"></i>
+    Veuillez vous connecter pour prendre un rendez-vous.
+  </div>
+</div>
+
+                <!-- Section Choix du Médecin -->
+               <!-- Section Choix du Médecin -->
+<!-- Section Choix du Médecin -->
+<div class="form-section">
+  <div class="section-header">
+    <div class="section-icon">
+      <i class="fas fa-user-md"></i>
+    </div>
+    <h5 class="mb-0">Choix du Médecin *</h5>
+  </div>
+
+  <div *ngIf="medecins.length === 0 && !loading" class="text-center py-3">
+    <i class="fas fa-info-circle text-muted me-2"></i>
+    <span class="text-muted">Aucun médecin disponible.</span>
+  </div>
+
+  <div *ngIf="medecins.length > 0" class="doctor-select-container">
+    <label class="form-label">Sélectionnez un médecin</label>
+    <select class="form-select doctor-select" 
+            [(ngModel)]="formData.medecin_id" 
+            name="medecin_id" 
+            required>
+      <option value="">-- Sélectionnez un médecin --</option>
+      <option *ngFor="let medecin of medecins" 
+              [value]="medecin.id">
+        Dr. {{ medecin.prenom }} {{ medecin.nom }} - 
+        {{ medecin.specialite }} 
+        ({{ medecin.tarif_consultation }} €)
+      </option>
+    </select>
+    
+    <div class="selected-doctor-preview mt-3 p-3 bg-light rounded" *ngIf="formData.medecin_id">
+      <div class="d-flex align-items-center">
+        <div class="bg-primary rounded-circle d-flex align-items-center justify-content-center me-3" style="width: 50px; height: 50px;">
+          <i class="fas fa-user-md text-white"></i>
+        </div>
+        <div>
+          <h5 class="mb-0">{{ getSelectedDoctorName() }}</h5>
+          <p class="mb-0">{{ getSelectedDoctorSpecialty() }} - {{ tarifConsultation }} €</p>
+          <p class="mb-0 text-muted small">{{ selectedMedecin?.email }}</p>
+          <p class="mb-0 text-muted small" *ngIf="selectedMedecin?.telephone">
+            Tél: {{ selectedMedecin.telephone }}
+          </p>
+          <p class="mb-0 text-muted small" *ngIf="selectedMedecin?.adresse_cabinet">
+            {{ selectedMedecin.adresse_cabinet }}, {{ selectedMedecin?.code_postal }} {{ selectedMedecin?.ville }}
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+                <!-- Section Date et Heure -->
+                <div class="form-section">
+                  <div class="section-header">
+                    <div class="section-icon">
+                      <i class="fas fa-clock"></i>
+                    </div>
+                    <h5 class="mb-0">Date et Heure du Rendez-vous *</h5>
+                  </div>
+
+                  <div class="row g-3">
+                    <div class="col-md-6">
+                      <label class="form-label">Date</label>
+                      <div class="input-group">
+                        <span class="input-group-text bg-light border-end-0"><i class="fas fa-calendar text-primary"></i></span>
+                        <input type="date" class="form-control border-start-0" [(ngModel)]="formData.date" name="date" required [min]="getTodayDate()">
+                      </div>
+                    </div>
+                    <div class="col-md-6">
+                      <label class="form-label">Heure de début</label>
+                      <div class="input-group">
+                        <span class="input-group-text bg-light border-end-0"><i class="fas fa-clock text-primary"></i></span>
+                        <select class="form-select border-start-0" [(ngModel)]="formData.heure_debut" name="heure_debut" required>
+                          <option value="">-- Sélectionnez une heure --</option>
+                          <option *ngFor="let heure of heuresDisponibles" [value]="heure">{{ heure }}</option>
+                        </select>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div *ngIf="formData.date && heuresDisponibles.length > 0" class="mt-3">
+                    <label class="form-label">Plages horaires disponibles :</label>
+                    <div class="time-slots-container">
+                      <span *ngFor="let heure of heuresDisponibles" 
+                          class="time-slot" 
+                          [class.selected]="formData.heure_debut === heure"
+                          (click)="formData.heure_debut = heure">
+                        {{ heure }}
+                      </span>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Section Motif -->
+                <div class="form-section">
+                  <div class="section-header">
+                    <div class="section-icon">
+                      <i class="fas fa-sticky-note"></i>
+                    </div>
+                    <h5 class="mb-0">Motif de la Consultation</h5>
+                  </div>
+                  <textarea class="form-control" [(ngModel)]="formData.notes" name="notes" rows="3" placeholder="Décrivez brièvement le motif de votre consultation..."></textarea>
+                </div>
+
+                <!-- Section Paiement -->
+                <div class="form-section">
+                  <div class="section-header">
+                    <div class="section-icon">
+                      <i class="fas fa-credit-card"></i>
+                    </div>
+                    <h5 class="mb-0">Mode de Paiement *</h5>
+                  </div>
+
+                  <div class="payment-options">
+                    <div class="payment-option" 
+                        [class.selected]="formData.mode_paiement === 'sur_place'"
+                        (click)="formData.mode_paiement = 'sur_place'">
+                      <div class="form-check">
+                        <input class="form-check-input" type="radio" name="mode_paiement" id="paiement_sur_place" value="sur_place" [(ngModel)]="formData.mode_paiement">
+                        <label class="form-check-label w-100" for="paiement_sur_place">
+                          <div class="d-flex justify-content-between align-items-center">
+                            <div>
+                              <span class="fw-bold">💰 Paiement sur place</span>
+                              <p class="mb-0 text-muted small">Vous paierez directement au cabinet le jour du rendez-vous</p>
+                            </div>
+                            <span class="badge bg-light text-dark">{{ tarifConsultation }} €</span>
+                          </div>
+                        </label>
+                      </div>
+                    </div>
+
+                    <div class="payment-option" 
+                        [class.selected]="formData.mode_paiement === 'en_ligne'"
+                        (click)="formData.mode_paiement = 'en_ligne'">
+                      <div class="form-check">
+                        <input class="form-check-input" type="radio" name="mode_paiement" id="paiement_en_ligne" value="en_ligne" [(ngModel)]="formData.mode_paiement">
+                        <label class="form-check-label w-100" for="paiement_en_ligne">
+                          <div class="d-flex justify-content-between align-items-center">
+                            <div>
+                              <span class="fw-bold">💳 Paiement en ligne sécurisé</span>
+                              <p class="mb-0 text-muted small">Vous serez redirigé vers une page de paiement sécurisé après confirmation</p>
+                            </div>
+                            <span class="badge bg-light text-dark">{{ tarifConsultation }} €</span>
+                          </div>
+                        </label>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="col-lg-4">
+                <div class="sticky-summary">
+                  <h5 class="mb-3">Résumé du Rendez-vous</h5>
+                  
+                  <div class="summary-item">
+                    <span class="summary-label">Patient:</span>
+                    <span class="summary-value" *ngIf="patients.length > 0">{{patients[0].prenom}} {{patients[0].nom}}</span>
+                  </div>
+                  
+                  <div class="summary-item" *ngIf="formData.medecin_id">
+                    <span class="summary-label">Médecin:</span>
+                    <span class="summary-value">{{ getSelectedDoctorName() }}</span>
+                  </div>
+                  
+                  <div class="summary-item" *ngIf="formData.date">
+                    <span class="summary-label">Date:</span>
+                    <span class="summary-value">{{ formData.date | date:'dd/MM/yyyy' }}</span>
+                  </div>
+                  
+                  <div class="summary-item" *ngIf="formData.heure_debut">
+                    <span class="summary-label">Heure:</span>
+                    <span class="summary-value">{{ formData.heure_debut }}</span>
+                  </div>
+                  
+                  <div class="summary-item">
+                    <span class="summary-label">Mode de paiement:</span>
+                    <span class="summary-value">
+                      {{ formData.mode_paiement === 'sur_place' ? 'Sur place' : 'En ligne' }}
+                    </span>
+                  </div>
+                  
+                  <div class="summary-item">
+                    <span class="summary-label">Tarif:</span>
+                    <span class="summary-value">{{ tarifConsultation }} €</span>
+                  </div>
+                  
+                  <hr>
+                  
+                  <div class="summary-item">
+                    <span class="summary-label fw-bold">Total:</span>
+                    <span class="summary-value price-total">{{ tarifConsultation }} €</span>
+                  </div>
+                  
+                  <div class="d-grid mt-3">
+                    <button type="submit" class="btn btn-primary" [disabled]="loading || !formData.patient_id || !formData.medecin_id">
+                      <span *ngIf="loading" class="spinner-border spinner-border-sm me-2"></span>
+                      <i class="fas fa-calendar-check me-2"></i>
+                      {{ loading ? 'Création en cours...' : 'Confirmer le rendez-vous' }}
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </form>
+
+          <!-- Composant Paiement -->
+          <div *ngIf="formData.mode_paiement === 'en_ligne' && newRendezVousId" class="mt-4 p-4 bg-light rounded-3">
+            <h4 class="mb-3"><i class="fas fa-credit-card me-2"></i> Paiement en Ligne</h4>
+            <app-payment [amount]="tarifConsultation" [appointmentId]="newRendezVousId"></app-payment>
+          </div>
+        </div>
+
+        <div class="card-footer text-center">
+          <small><i class="fas fa-info-circle me-1"></i> Les champs marqués d'un * sont obligatoires. Vous recevrez un email de confirmation.</small>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Bootstrap & Angular JS -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

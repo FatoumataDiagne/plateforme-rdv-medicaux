@@ -1,0 +1,159 @@
+<div class="admin-container">
+  <h2 class="page-title">Gestion des Utilisateurs</h2>
+
+  <!-- Messages -->
+  <div *ngIf="error" class="alert alert-danger custom-alert">
+    <i class="fas fa-exclamation-circle"></i> {{ error }}
+  </div>
+
+  <div *ngIf="success" class="alert alert-success custom-alert">
+    <i class="fas fa-check-circle"></i> {{ success }}
+  </div>
+
+  <!-- Search Bar -->
+  <div class="search-container">
+    <div class="search-box">
+      <i class="fas fa-search search-icon"></i>
+      <input type="text" class="search-input" placeholder="Rechercher un utilisateur..." 
+             [(ngModel)]="searchTerm" (keyup.enter)="onSearch()">
+      <button class="search-btn" (click)="onSearch()">
+        Rechercher
+      </button>
+    </div>
+  </div>
+
+  <!-- Loading -->
+  <div *ngIf="loading" class="loading-container">
+    <div class="spinner"></div>
+    <p>Chargement des utilisateurs...</p>
+  </div>
+
+  <!-- Users Table -->
+  <div *ngIf="!loading && users.length > 0" class="table-container">
+    <div class="table-responsive">
+      <table class="users-table">
+        <thead>
+          <tr>
+            <th>ID</th>
+            <th>Nom & Prénom</th>
+            <th>Email</th>
+            <th>Téléphone</th>
+            <th>Rôle</th>
+            <th>Date d'inscription</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let user of users" class="user-row">
+            <td class="user-id">{{ user.id }}</td>
+
+            <!-- Nom & Prénom -->
+            <td *ngIf="editingUser?.id !== user.id" class="user-name">{{ user.prenom }} {{ user.nom }}</td>
+            <td *ngIf="editingUser?.id === user.id" class="editing-field">
+              <input type="text" [(ngModel)]="editingUser.prenom" class="form-input" placeholder="Prénom">
+              <input type="text" [(ngModel)]="editingUser.nom" class="form-input" placeholder="Nom">
+            </td>
+
+            <!-- Email -->
+            <td *ngIf="editingUser?.id !== user.id" class="user-email">{{ user.email }}</td>
+            <td *ngIf="editingUser?.id === user.id" class="editing-field">
+              <input type="email" [(ngModel)]="editingUser.email" class="form-input">
+            </td>
+
+            <!-- Téléphone -->
+            <td *ngIf="editingUser?.id !== user.id" class="user-phone">{{ user.telephone || 'Non renseigné' }}</td>
+            <td *ngIf="editingUser?.id === user.id" class="editing-field">
+              <input type="text" [(ngModel)]="editingUser.telephone" class="form-input">
+            </td>
+
+            <!-- Rôle -->
+            <td class="user-role">
+              <span [class]="'role-badge ' + user.role" class="role-badge">
+                {{ getRoleText(user.role) }}
+              </span>
+              <div *ngIf="editingUser?.id === user.id" class="editing-field">
+                <select class="role-dropdown" [(ngModel)]="editingUser.role">
+                  <option value="patient">Patient</option>
+                  <option value="medecin">Médecin</option>
+                  <option value="admin">Administrateur</option>
+                </select>
+              </div>
+            </td>
+
+            <!-- Date d'inscription -->
+            <td class="user-date">{{ user.created_at | date:'dd/MM/yyyy' }}</td>
+
+            <!-- Actions -->
+            <td class="user-actions">
+              <!-- Mode normal -->
+              <div class="action-buttons" *ngIf="editingUser?.id !== user.id">
+                <button class="btn-edit" (click)="startEdit(user)">
+                  <i class="fas fa-edit"></i>
+                </button>
+                <button class="btn-delete" (click)="deleteUser(user.id)">
+                  <i class="fas fa-trash"></i>
+                </button>
+              </div>
+
+              <!-- Mode édition -->
+              <div class="action-buttons" *ngIf="editingUser?.id === user.id">
+                <button class="btn-save" (click)="updateUser()">
+                  <i class="fas fa-save"></i>
+                </button>
+                <button class="btn-cancel" (click)="cancelEdit()">
+                  <i class="fas fa-times"></i>
+                </button>
+              </div>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- Pagination améliorée -->
+    <div class="pagination-container" *ngIf="totalPages > 1">
+      <div class="pagination-info">
+        Affichage de {{ (currentPage - 1) * perPage + 1 }} à {{ Math.min(currentPage * perPage, totalItems) }} sur {{ totalItems }} utilisateurs
+      </div>
+      
+      <nav class="pagination-nav">
+        <ul class="pagination">
+          <li class="page-item" [class.disabled]="currentPage === 1">
+            <a class="page-link prev" (click)="changePage(currentPage - 1)">
+              <i class="fas fa-chevron-left"></i> Précédent
+            </a>
+          </li>
+          
+          <li class="page-item" *ngFor="let page of getPages()" 
+              [class.active]="page === currentPage">
+            <a class="page-link" (click)="changePage(page)">{{ page }}</a>
+          </li>
+          
+          <li class="page-item" [class.disabled]="currentPage === totalPages">
+            <a class="page-link next" (click)="changePage(currentPage + 1)">
+              Suivant <i class="fas fa-chevron-right"></i>
+            </a>
+          </li>
+        </ul>
+      </nav>
+      
+      <div class="page-size-selector">
+        <label>Afficher :</label>
+        <select [(ngModel)]="perPage" (change)="onPageSizeChange()">
+          <option value="5">5</option>
+          <option value="10">10</option>
+          <option value="20">20</option>
+          <option value="50">50</option>
+        </select>
+        <span>par page</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- No Users -->
+  <div *ngIf="!loading && users.length === 0" class="empty-state">
+    <i class="fas fa-users empty-icon"></i>
+    <h3>Aucun utilisateur trouvé</h3>
+    <p>Essayez d'ajuster vos critères de recherche</p>
+  </div>
+</div>

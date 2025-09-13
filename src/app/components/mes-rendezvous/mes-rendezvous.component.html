@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mes Rendez-vous</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="container mt-4 patient-dashboard">
+        <h2 class="page-title"><i class="fas fa-calendar-alt me-2"></i>Mes Rendez-vous</h2>
+
+        <!-- Onglets -->
+        <ul class="nav nav-tabs mb-4">
+            <li class="nav-item">
+                <a class="nav-link active" [class.active]="activeTab === 'a_venir'" 
+                   (click)="setActiveTab('a_venir')">
+                    <i class="fas fa-calendar-check me-1"></i>
+                    À venir
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" [class.active]="activeTab === 'historique'" 
+                   (click)="setActiveTab('historique')">
+                    <i class="fas fa-history me-1"></i>
+                    Historique
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" [class.active]="activeTab === 'annules'" 
+                   (click)="setActiveTab('annules')">
+                    <i class="fas fa-times-circle me-1"></i>
+                    Annulés
+                </a>
+            </li>
+        </ul>
+
+        <!-- Barre de recherche et filtres -->
+        <div class="filter-container" *ngIf="rendezVous.length > 0">
+            <div class="row">
+                <div class="col-md-6 mb-3">
+                    <div class="input-group">
+                        <span class="input-group-text">
+                            <i class="fas fa-search"></i>
+                        </span>
+                        <input type="text" class="form-control" placeholder="Rechercher..." 
+                               [(ngModel)]="filters.search" (input)="onFilterChange()">
+                    </div>
+                </div>
+                <div class="col-md-3 mb-3">
+                    <div class="input-group">
+                        <span class="input-group-text">
+                            <i class="fas fa-filter"></i>
+                        </span>
+                        <select class="form-select" [(ngModel)]="filters.statut" (change)="onFilterChange()">
+                            <option value="tous">Tous les statuts</option>
+                            <option value="confirmé">Confirmés</option>
+                            <option value="en_attente">En attente</option>
+                            <option value="annulé">Annulés</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="col-md-3 text-end">
+                    <span class="results-count">
+                        {{ filteredRendezVous.length }} résultat(s)
+                    </span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Loading -->
+        <div *ngIf="loading" class="text-center py-5">
+            <div class="spinner-border" role="status"></div>
+            <p>Chargement de vos rendez-vous...</p>
+        </div>
+
+        <!-- Messages -->
+        <div *ngIf="error" class="alert alert-danger">
+            <i class="fas fa-exclamation-triangle me-2"></i>{{ error }}
+        </div>
+
+        <div *ngIf="success" class="alert alert-success">
+            <i class="fas fa-check-circle me-2"></i>{{ success }}
+        </div>
+
+        <!-- Liste des rendez-vous -->
+        <div *ngIf="!loading && !error">
+            <div *ngIf="rendezVous.length === 0" class="alert alert-info">
+                <i class="fas fa-info-circle me-2"></i>Vous n'avez aucun rendez-vous.
+            </div>
+
+            <div *ngFor="let rdv of filteredRendezVous" class="rdv-card mb-3">
+                <div class="card">
+                    <div class="card-header d-flex justify-content-between align-items-center">
+                        <h5 class="mb-0">
+                            Rendez-vous du {{ rdv.date }} à {{ rdv.heure_debut }}
+                        </h5>
+                        <span [class]="getStatusBadgeClass(rdv.statut)">
+                            {{ getStatusText(rdv.statut) }}
+                        </span>
+                    </div>
+
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <p><strong>Médecin :</strong> Dr. {{ rdv.medecin_nom }}</p>
+                                <p><strong>Spécialité :</strong> {{ rdv.medecin_specialite }}</p>
+                                <p><strong>Date :</strong> {{ rdv.date }} à {{ rdv.heure_debut }}</p>
+                            </div>
+                            <div class="col-md-6">
+                                <p><strong>Statut paiement :</strong> 
+                                    <span [class]="rdv.statut_paiement === 'payé' ? 'badge bg-success' : 'badge bg-warning'">
+                                        {{ rdv.statut_paiement || 'Non payé' }}
+                                    </span>
+                                </p>
+                                <p><strong>Mode de paiement :</strong> {{ rdv.mode_paiement || 'Non spécifié' }}</p>
+                                <p><strong>Montant :</strong> {{ rdv.montant || '0' }} €</p>
+                            </div>
+                        </div>
+
+                        <div *ngIf="rdv.notes" class="mt-3 notes">
+                            <strong>Notes :</strong>
+                            <p class="text-muted">{{ rdv.notes }}</p>
+                        </div>
+
+                        <!-- Actions -->
+                        <div class="mt-3 actions">
+                            <!-- Bouton Annuler - visible seulement pour les rendez-vous à venir non annulés -->
+                            <button *ngIf="rdv.statut !== 'annulé' && isFutureAppointment(rdv)" 
+                                    class="btn btn-danger btn-sm me-2" 
+                                    (click)="annulerRendezVous(rdv.id)">
+                                <i class="fas fa-times me-1"></i>Annuler
+                            </button>
+                            
+                            <!-- Bouton Télécharger - visible seulement pour les rendez-vous confirmés -->
+                            <button *ngIf="rdv.statut === 'confirmé' || rdv.statut === 'confirme'" 
+                                    class="btn btn-primary btn-sm" 
+                                    (click)="downloadJustificatif(rdv.id)">
+                                <i class="fas fa-file-pdf me-1"></i>Télécharger le justificatif
+                            </button>
+                            
+                            <!-- Message pour les rendez-vous en attente -->
+                            <div *ngIf="rdv.statut === 'en_attente' || rdv.statut === 'en attente'" class="text-info mt-2">
+                                <i class="fas fa-info-circle me-1"></i>
+                                Le justificatif sera disponible après confirmation du médecin
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

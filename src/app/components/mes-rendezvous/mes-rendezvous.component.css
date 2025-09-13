@@ -1,0 +1,259 @@
+  
+        /* ===== Container ===== */
+        .patient-dashboard {
+            font-family: 'Poppins', sans-serif;
+        }
+
+        /* Titre de page */
+        .page-title {
+            font-size: 2rem;
+            color: #3498db;
+            margin-bottom: 1.5rem;
+            text-shadow: 0 1px 2px rgba(0,0,0,0.1);
+        }
+
+        /* Onglets */
+        .nav-tabs {
+            border-bottom: 2px solid #eef2f5;
+            margin-bottom: 30px;
+        }
+        
+        .nav-tabs .nav-link {
+            color: #3498db;
+            font-weight: 500;
+            border-radius: 25px;
+            margin-right: 5px;
+            transition: all 0.3s;
+            border: none;
+            padding: 12px 20px;
+        }
+        
+        .nav-tabs .nav-link:hover {
+            background-color: rgba(52, 152, 219, 0.1);
+        }
+        
+        .nav-tabs .nav-link.active {
+            background: #3498db;
+            color: white;
+            box-shadow: 0 4px 10px rgba(52,152,219,0.3);
+        }
+
+        /* Filtres améliorés */
+        .filter-container {
+            background: white;
+            padding: 20px;
+            border-radius: 15px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+            margin-bottom: 30px;
+        }
+        
+        .form-control, .form-select {
+            border-radius: 25px;
+            border: 1px solid #ddd;
+            padding: 12px 15px;
+            transition: all 0.3s;
+        }
+        
+        .form-control:focus, .form-select:focus {
+            border-color: #3498db;
+            box-shadow: 0 0 5px rgba(52,152,219,0.3);
+        }
+        
+        .results-count {
+            font-weight: 500;
+            color: #2c3e50;
+            font-size: 0.9rem;
+            padding-top: 10px;
+            display: inline-block;
+        }
+
+        /* Cards */
+        .rdv-card {
+            border-radius: 15px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+            transition: transform 0.3s, box-shadow 0.3s;
+            border: none;
+            background: linear-gradient(145deg, #ffffff, #f0f8ff);
+            margin-bottom: 25px;
+        }
+        
+        .rdv-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+        }
+        
+        /* Card header */
+        .card-header {
+            background: #3498db;
+            color: white;
+            border-radius: 15px 15px 0 0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-weight: 600;
+            padding: 15px 20px;
+        }
+        
+        /* Badges statut */
+        .badge {
+            padding: 5px 12px;
+            border-radius: 12px;
+            font-weight: 600;
+            text-transform: uppercase;
+            font-size: 0.8rem;
+        }
+        
+        .badge.bg-success { background: #4CAF50; color: white; }
+        .badge.bg-warning { background: #f1c40f; color: white; }
+        .badge.bg-danger { background: #e74c3c; color: white; }
+        
+        .card-body {
+            padding: 20px;
+        }
+        
+        .card-body p {
+            margin-bottom: 8px;
+        }
+        
+        .card-body strong {
+            color: #2c3e50;
+            min-width: 140px;
+            display: inline-block;
+        }
+        
+        /* Notes */
+        .notes {
+            background-color: #f8f9fa;
+            padding: 15px;
+            border-radius: 8px;
+            margin-top: 15px;
+            border-left: 4px solid #3498db;
+        }
+        
+        .notes p {
+            font-style: italic;
+            color: #7f8c8d !important;
+            margin-bottom: 0;
+        }
+        
+        /* Actions */
+        .actions {
+            margin-top: 20px;
+            padding-top: 15px;
+            border-top: 1px solid #eef2f5;
+        }
+        
+        /* Boutons */
+        .btn {
+            border-radius: 25px;
+            font-weight: 500;
+            padding: 6px 16px;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+        
+        .btn-primary {
+            background-color: #3498db;
+            border: none;
+            color: white;
+        }
+        
+        .btn-primary:hover {
+            background-color: #2980b9;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(52,152,219,0.4);
+        }
+        
+        .btn-danger {
+            background-color: #e74c3c;
+            border: none;
+            color: white;
+        }
+        
+        .btn-danger:hover {
+            background-color: #c0392b;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(231,76,60,0.4);
+        }
+        
+        /* États de chargement et d'erreur */
+        .spinner-border {
+            width: 3rem;
+            height: 3rem;
+            color: #3498db;
+        }
+        
+        .alert {
+            border-radius: 12px;
+            padding: 20px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+            border: none;
+        }
+        
+        .alert-danger {
+            background: linear-gradient(145deg, #ffffff, #ffebee);
+            color: #d32f2f;
+            border-left: 4px solid #e74c3c;
+        }
+        
+        .alert-success {
+            background: linear-gradient(145deg, #ffffff, #e8f5e9);
+            color: #2e7d32;
+            border-left: 4px solid #4CAF50;
+        }
+        
+        .alert-info {
+            background: linear-gradient(145deg, #ffffff, #e3f2fd);
+            color: #1976d2;
+            border-left: 4px solid #3498db;
+        }
+        
+        /* Responsive */
+        @media (max-width: 768px) {
+            .card-body p {
+                margin-bottom: 12px;
+            }
+            
+            .card-body strong {
+                min-width: unset;
+                display: block;
+                margin-bottom: 3px;
+            }
+            
+            .actions .btn {
+                display: block;
+                width: 100%;
+                margin-bottom: 10px;
+            }
+            
+            .actions .btn:last-child {
+                margin-bottom: 0;
+            }
+            
+            .card-header {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+            
+            .card-header .badge {
+                margin-top: 10px;
+            }
+        }
+        
+        /* Animation des cartes */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .rdv-card {
+            animation: fadeIn 0.5s ease-out;
+        }
+        
+        /* Amélioration des icônes dans les inputs */
+        .input-group-text {
+            background-color: #3498db;
+            border-color: #3498db;
+            color: white;
+            border-radius: 25px 0 0 25px;
+        }
+  

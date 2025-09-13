@@ -1,0 +1,230 @@
+<div class="container-fluid py-4">
+  <!-- En-tête -->
+  <div class="d-flex justify-content-between align-items-center mb-4">
+    <h1 class="h3 mb-0">Dashboard Administrateur</h1>
+    <button class="btn btn-primary" (click)="refreshStats()" [disabled]="loading">
+      <i class="fas fa-sync-alt" [class.fa-spin]="loading"></i> Actualiser
+    </button>
+  </div>
+  <!-- Ajoute cette section sous l'en-tête -->
+<div class="dashboard-controls mb-4">
+  <div class="row">
+    <div class="col-md-6">
+      <div class="input-group">
+        <input type="date" class="form-control" #startDate>
+        <input type="date" class="form-control" #endDate>
+        <button class="btn btn-outline-primary" 
+                (click)="filterByDate(startDate.value, endDate.value)">
+          Filtrer
+        </button>
+      </div>
+    </div>
+    <div class="col-md-6 text-end">
+      <button class="btn btn-success me-2" (click)="exportStats()">
+        <i class="fas fa-download"></i> Exporter JSON
+      </button>
+      <button class="btn btn-info" (click)="refreshStats()">
+        <i class="fas fa-sync-alt"></i> Actualiser
+      </button>
+    </div>
+  </div>
+</div>
+  <!-- Graphiques -->
+  <div class="row" *ngIf="stats && !loading">
+    
+    <!-- Graphique Statuts RDV -->
+    <div class="col-lg-6 mb-4">
+      <app-pie-chart
+        title="Répartition des Rendez-vous"
+        [data]="rdvStatusData"
+        [colors]="['#1cc88a', '#f6c23e', '#e74a3b']">
+      </app-pie-chart>
+    </div>
+
+    <!-- Graphique Statuts Paiement -->
+    <div class="col-lg-6 mb-4">
+      <app-pie-chart
+        title="Statuts de Paiement"
+        [data]="paiementStatusData"
+        [colors]="['#4e73df', '#36b9cc', '#858796']">
+      </app-pie-chart>
+    </div>
+
+    <!-- Graphique Top Spécialités -->
+    <div class="col-lg-12 mb-4">
+      <app-bar-chart
+        title="Top 5 des Spécialités (Nombre de RDV)"
+        [data]="specialiteData"
+        color="#4e73df">
+      </app-bar-chart>
+    </div>
+
+  </div>
+
+  <!-- Loading -->
+  <div *ngIf="loading" class="text-center py-5">
+    <div class="spinner-border text-primary" role="status">
+      <span class="visually-hidden">Chargement...</span>
+    </div>
+    <p class="mt-2">Chargement des statistiques...</p>
+  </div>
+
+  <!-- Error -->
+  <div *ngIf="error && !loading" class="alert alert-danger">
+    {{ error }}
+    <button class="btn btn-sm btn-outline-danger ms-3" (click)="refreshStats()">Réessayer</button>
+  </div>
+
+  <!-- Stats -->
+  <div *ngIf="stats && !loading">
+    
+    <!-- Cartes Statistiques Générales -->
+    <div class="row mb-4">
+      <div class="col-xl-3 col-md-6 mb-4">
+        <div class="card border-left-primary shadow h-100 py-2">
+          <div class="card-body">
+            <div class="row no-gutters align-items-center">
+              <div class="col mr-2">
+                <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">Total Utilisateurs</div>
+                <div class="h5 mb-0 font-weight-bold text-gray-800">{{ stats.general.total_users }}</div>
+              </div>
+              <div class="col-auto">
+                <i class="fas fa-users fa-2x text-gray-300"></i>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-xl-3 col-md-6 mb-4">
+        <div class="card border-left-success shadow h-100 py-2">
+          <div class="card-body">
+            <div class="row no-gutters align-items-center">
+              <div class="col mr-2">
+                <div class="text-xs font-weight-bold text-success text-uppercase mb-1">Rendez-vous</div>
+                <div class="h5 mb-0 font-weight-bold text-gray-800">{{ stats.general.total_rendezvous }}</div>
+              </div>
+              <div class="col-auto">
+                <i class="fas fa-calendar-check fa-2x text-gray-300"></i>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-xl-3 col-md-6 mb-4">
+        <div class="card border-left-info shadow h-100 py-2">
+          <div class="card-body">
+            <div class="row no-gutters align-items-center">
+              <div class="col mr-2">
+                <div class="text-xs font-weight-bold text-info text-uppercase mb-1">Revenus Totaux</div>
+                <div class="h5 mb-0 font-weight-bold text-gray-800">{{ stats.general.revenus_totaux | currency:'EUR' }}</div>
+              </div>
+              <div class="col-auto">
+                <i class="fas fa-euro-sign fa-2x text-gray-300"></i>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-xl-3 col-md-6 mb-4">
+        <div class="card border-left-warning shadow h-100 py-2">
+          <div class="card-body">
+            <div class="row no-gutters align-items-center">
+              <div class="col mr-2">
+                <div class="text-xs font-weight-bold text-warning text-uppercase mb-1">Médecins</div>
+                <div class="h5 mb-0 font-weight-bold text-gray-800">{{ stats.general.total_medecins }}</div>
+              </div>
+              <div class="col-auto">
+                <i class="fas fa-user-md fa-2x text-gray-300"></i>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Graphiques et Détails -->
+    <div class="row">
+      <!-- Stats par statut -->
+      <div class="col-lg-6 mb-4">
+        <div class="card shadow">
+          <div class="card-header py-3">
+            <h6 class="m-0 font-weight-bold text-primary">Répartition des Rendez-vous</h6>
+          </div>
+          <div class="card-body">
+            <div class="chart-pie pt-4 pb-2">
+              <canvas id="rdvStatusChart"></canvas>
+            </div>
+            <div class="mt-4 text-center small">
+              <span class="mr-2">
+                <i class="fas fa-circle text-success"></i> Confirmés: {{ stats.par_statut.rendezvous.confirme }}
+              </span>
+              <span class="mr-2">
+                <i class="fas fa-circle text-warning"></i> En attente: {{ stats.par_statut.rendezvous.en_attente }}
+              </span>
+              <span class="mr-2">
+                <i class="fas fa-circle text-danger"></i> Annulés: {{ stats.par_statut.rendezvous.annule }}
+              </span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Stats financières -->
+      <div class="col-lg-6 mb-4">
+        <div class="card shadow">
+          <div class="card-header py-3">
+            <h6 class="m-0 font-weight-bold text-primary">Statistiques Financières</h6>
+          </div>
+          <div class="card-body">
+            <div class="row">
+              <div class="col-md-6">
+                <p><strong>Paiements en ligne:</strong> {{ stats.advanced.finances.paiements_en_ligne }}</p>
+                <p><strong>Revenus en ligne:</strong> {{ stats.advanced.finances.revenus_en_ligne | currency:'EUR' }}</p>
+              </div>
+              <div class="col-md-6">
+                <p><strong>Paiements sur place:</strong> {{ stats.advanced.finances.paiements_sur_place }}</p>
+                <p><strong>Revenus sur place:</strong> {{ stats.advanced.finances.revenus_sur_place | currency:'EUR' }}</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Spécialités -->
+    <div class="row">
+      <div class="col-12">
+        <div class="card shadow mb-4">
+          <div class="card-header py-3">
+            <h6 class="m-0 font-weight-bold text-primary">Performance par Spécialité</h6>
+          </div>
+          <div class="card-body">
+            <div class="table-responsive">
+              <table class="table table-bordered">
+                <thead>
+                  <tr>
+                    <th>Spécialité</th>
+                    <th>Médecins</th>
+                    <th>Rendez-vous</th>
+                    <th>Revenus</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr *ngFor="let spec of stats.advanced.specialites">
+                    <td>{{ spec.name }}</td>
+                    <td>{{ spec.medecins_count }}</td>
+                    <td>{{ spec.rendez_vous_count }}</td>
+                    <td>{{ spec.revenus | currency:'EUR' }}</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

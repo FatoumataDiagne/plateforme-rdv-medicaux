@@ -1,0 +1,86 @@
+<div class="register-wrapper">
+  <div class="register-card">
+    <div class="register-header">
+      <h2>✨ Création de compte</h2>
+      <p>Rejoignez notre plateforme en quelques secondes</p>
+    </div>
+
+    <!-- Messages -->
+    <div *ngIf="error" class="alert alert-danger">{{ error }}</div>
+    <div *ngIf="success" class="alert alert-success">{{ success }}</div>
+
+    <!-- Formulaire -->
+    <form #registerForm="ngForm" (ngSubmit)="onSubmit()" class="register-form">
+
+      <div class="row">
+        <div class="col-md-6">
+          <div class="input-group">
+            <span class="input-icon">👤</span>
+            <input type="text" placeholder="Prénom *"
+                   [(ngModel)]="userData.prenom" name="prenom" required>
+          </div>
+        </div>
+        <div class="col-md-6">
+          <div class="input-group">
+            <span class="input-icon">👥</span>
+            <input type="text" placeholder="Nom *"
+                   [(ngModel)]="userData.nom" name="nom" required>
+          </div>
+        </div>
+      </div>
+
+      <div class="input-group">
+        <span class="input-icon">📧</span>
+        <input type="email" placeholder="Email *"
+               [(ngModel)]="userData.email" name="email" required email>
+      </div>
+
+      <div class="row">
+        <div class="col-md-6">
+          <div class="input-group">
+            <span class="input-icon">🔒</span>
+            <input type="password" placeholder="Mot de passe *"
+                   [(ngModel)]="userData.password" name="password"
+                   required minlength="6">
+          </div>
+        </div>
+        <div class="col-md-6">
+          <div class="input-group">
+            <span class="input-icon">✅</span>
+            <input type="password" placeholder="Confirmation *"
+                   [(ngModel)]="userData.password_confirmation" name="password_confirmation" required>
+          </div>
+        </div>
+      </div>
+
+      <div class="input-group">
+        <span class="input-icon">📱</span>
+        <input type="tel" placeholder="Téléphone"
+               [(ngModel)]="userData.telephone" name="telephone">
+      </div>
+
+      <div class="input-group">
+        <span class="input-icon">🎂</span>
+        <input type="date"
+               [(ngModel)]="userData.date_naissance" name="date_naissance">
+      </div>
+
+      <div class="input-group textarea-group">
+        <span class="input-icon">🏠</span>
+        <textarea placeholder="Adresse"
+                  [(ngModel)]="userData.adresse" name="adresse" rows="3"></textarea>
+      </div>
+
+      <input type="hidden" [(ngModel)]="userData.role" name="role">
+
+      <button type="submit" class="btn-submit" [disabled]="loading">
+        <span *ngIf="loading" class="spinner-border spinner-border-sm me-2"></span>
+        {{ loading ? 'Création...' : 'Créer mon compte' }}
+      </button>
+    </form>
+
+    <div class="text-center mt-3">
+      <p>Déjà un compte ? <a routerLink="/login">Se connecter</a></p>
+    </div>
+  </div>
+</div>

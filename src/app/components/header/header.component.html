@@ -1,0 +1,155 @@
+<header class="header">
+  <div class="header-container">
+    <nav class="navbar">
+      <!-- Logo -->
+      <a class="navbar-brand" routerLink="/">
+        <i class="fas fa-stethoscope"></i>
+        MedConnect
+      </a>
+
+      <!-- Menu toggle pour mobile -->
+      <button class="navbar-toggle" (click)="toggleMenu()">
+        <i class="fas fa-bars"></i>
+      </button>
+
+      <!-- Navigation principale -->
+      <ul class="navbar-nav" [class.show]="isMenuOpen">
+        <!-- Liens communs à tous -->
+        <li class="nav-item">
+          <a class="nav-link" routerLink="/" routerLinkActive="active" 
+             [routerLinkActiveOptions]="{exact: true}">
+            <i class="fas fa-home"></i>
+            Accueil
+          </a>
+        </li>
+
+        <!-- Liens spécifiques aux patients -->
+        <ng-container *ngIf="authService.isPatient()">
+          <li class="nav-item">
+            <a class="nav-link" routerLink="/medecins" routerLinkActive="active">
+              <i class="fas fa-search"></i>
+              Rechercher Médecins
+            </a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" routerLink="/prendre-rendezvous" routerLinkActive="active">
+              <i class="fas fa-calendar-plus"></i>
+              Prendre RDV
+            </a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" routerLink="/mes-rendezvous" routerLinkActive="active">
+              <i class="fas fa-calendar-alt"></i>
+              Mes Rendez-vous
+            </a>
+          </li>
+          
+          <!-- NOUVEAU : Assistant IA -->
+          <li class="nav-item">
+            <a class="nav-link ai-assistant-link" (click)="openAIChat()">
+              <i class="fas fa-robot"></i>
+              Assistant IA
+              <span class="ai-badge">Nouveau</span>
+            </a>
+          </li>
+        </ng-container>
+
+        <!-- Liens spécifiques aux médecins -->
+        <ng-container *ngIf="authService.isMedecin()">
+          <li class="nav-item">
+            <a class="nav-link" routerLink="/medecin/agenda" routerLinkActive="active">
+              <i class="fas fa-calendar"></i>
+              Mon Agenda
+            </a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" routerLink="/medecin/plages-horaires" routerLinkActive="active">
+              <i class="fas fa-clock"></i>
+              Plages Horaires
+            </a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" routerLink="/medecin/rdv-a-confirmer" routerLinkActive="active">
+              <i class="fas fa-check-circle"></i>
+              RDV à Confirmer
+              <span class="notification-badge" *ngIf="pendingAppointmentsCount > 0">
+                {{ pendingAppointmentsCount }}
+              </span>
+            </a>
+          </li>
+        </ng-container>
+
+        <!-- Liens spécifiques aux administrateurs -->
+        <ng-container *ngIf="authService.isAdmin()">
+          <li class="nav-item">
+            <a class="nav-link" routerLink="/admin/users" routerLinkActive="active">
+              <i class="fas fa-users"></i>
+              Gestion Utilisateurs
+            </a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" routerLink="/admin/specialites" routerLinkActive="active">
+              <i class="fas fa-tags"></i>
+              Gestion Spécialités
+            </a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" routerLink="/admin/statistiques" routerLinkActive="active">
+              <i class="fas fa-chart-bar"></i>
+              Statistiques
+            </a>
+          </li>
+          <li class="nav-item">
+     <a class="nav-link" routerLink="/admin/justificatifs">
+    <i class="fas fa-file-medical"></i> Justificatifs
+  </a>
+</li>
+        </ng-container>
+
+        <!-- Liens communs selon le rôle -->
+        <li class="nav-item">
+          <a class="nav-link" routerLink="/profile" routerLinkActive="active">
+            <i class="fas fa-user"></i>
+            Mon Profil
+          </a>
+        </li>
+      </ul>
+
+      <!-- Côté droit avec informations utilisateur -->
+      <div class="navbar-right" [class.show]="isMenuOpen">
+        <!-- Utilisateur connecté -->
+        <ng-container *ngIf="authService.isLoggedIn()">
+          <span class="welcome-text">
+            <i class="fas fa-user-circle"></i>
+            {{ authService.getCurrentUser()?.prenom }}
+            <span class="user-role-badge" [class]="authService.getCurrentUser()?.role">
+              {{ getRoleLabel(authService.getCurrentUser()?.role) }}
+            </span>
+          </span>
+          
+          <a class="logout-link" (click)="logout()">
+            <i class="fas fa-sign-out-alt"></i>
+            Déconnexion
+          </a>
+        </ng-container>
+
+        <!-- Utilisateur non connecté -->
+        <ng-container *ngIf="!authService.isLoggedIn()">
+          <div class="auth-links">
+            <a class="auth-link login" routerLink="/login">
+              <i class="fas fa-sign-in-alt"></i>
+              Connexion
+            </a>
+            <a class="auth-link register" routerLink="/register">
+              <i class="fas fa-user-plus"></i>
+              Inscription
+            </a>
+          </div>
+        </ng-container>
+      </div>
+    </nav>
+  </div>
+
+  <!-- Intégration du composant AI Chat - SEULEMENT pour les patients -->
+  <app-ai-chat *ngIf="authService.isPatient()"></app-ai-chat>
+</header>

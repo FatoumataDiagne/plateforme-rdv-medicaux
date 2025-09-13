@@ -1,0 +1,201 @@
+<div class="container mt-4">
+  <div class="row">
+    <div class="col-md-12">
+      <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2>
+          <i class="fas fa-history me-2"></i>
+          Mes Rendez-vous
+        </h2>
+        <div class="btn-group">
+          <button class="btn btn-outline-primary" (click)="loadHistorique()">
+            <i class="fas fa-sync-alt me-1"></i>Actualiser
+          </button>
+        </div>
+      </div>
+
+      <!-- Statistiques -->
+      <div class="row mb-4" *ngIf="stats">
+        <div class="col-md-3">
+          <div class="card bg-primary text-white text-center">
+            <div class="card-body">
+              <h5 class="card-title">{{ stats.total || 0 }}</h5>
+              <p class="card-text">Total RDV</p>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-3">
+          <div class="card bg-success text-white text-center">
+            <div class="card-body">
+              <h5 class="card-title">{{ stats.confirmes || 0 }}</h5>
+              <p class="card-text">Confirmés</p>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-3">
+          <div class="card bg-warning text-white text-center">
+            <div class="card-body">
+              <h5 class="card-title">{{ stats.en_attente || 0 }}</h5>
+              <p class="card-text">En attente</p>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-3">
+          <div class="card bg-info text-white text-center">
+            <div class="card-body">
+              <h5 class="card-title">{{ stats.prochains || 0 }}</h5>
+              <p class="card-text">À venir</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Filtres -->
+      <div class="card mb-4">
+        <div class="card-header bg-light">
+          <h5 class="mb-0">
+            <i class="fas fa-filter me-2"></i>
+            Filtres de recherche
+          </h5>
+        </div>
+        <div class="card-body">
+          <div class="row g-3">
+            <div class="col-md-3">
+              <label class="form-label">Date début</label>
+              <input type="date" class="form-control" 
+                     [(ngModel)]="filters.date_debut" 
+                     (change)="applyFilters()">
+            </div>
+            <div class="col-md-3">
+              <label class="form-label">Date fin</label>
+              <input type="date" class="form-control" 
+                     [(ngModel)]="filters.date_fin" 
+                     (change)="applyFilters()">
+            </div>
+            <div class="col-md-2">
+              <label class="form-label">Statut</label>
+              <select class="form-select" 
+                      [(ngModel)]="filters.statut" 
+                      (change)="applyFilters()">
+                <option value="tous">Tous les statuts</option>
+                <option *ngFor="let statut of statuts" [value]="statut">
+                  {{ statut }}
+                </option>
+              </select>
+            </div>
+            <div class="col-md-2">
+              <label class="form-label">Spécialité</label>
+              <select class="form-select" 
+                      [(ngModel)]="filters.specialite" 
+                      (change)="applyFilters()">
+                <option value="">Toutes spécialités</option>
+                <option *ngFor="let spec of specialites" [value]="spec">
+                  {{ spec }}
+                </option>
+              </select>
+            </div>
+            <div class="col-md-2">
+              <label class="form-label">Médecin</label>
+              <select class="form-select" 
+                      [(ngModel)]="filters.medecin_id" 
+                      (change)="applyFilters()">
+                <option value="">Tous médecins</option>
+                <option *ngFor="let medecin of medecins" [value]="medecin.id">
+                  Dr. {{ medecin.prenom }} {{ medecin.nom }}
+                </option>
+              </select>
+            </div>
+            <div class="col-md-6">
+              <label class="form-label">Recherche</label>
+              <input type="text" class="form-control" 
+                     [(ngModel)]="filters.search" 
+                     (input)="applyFilters()"
+                     placeholder="Rechercher par médecin, spécialité, date...">
+            </div>
+            <div class="col-md-6 d-flex align-items-end">
+              <button class="btn btn-outline-secondary me-2" (click)="resetFilters()">
+                <i class="fas fa-times me-1"></i>Réinitialiser
+              </button>
+              <div class="text-muted">
+                {{ filteredRendezVous.length }} résultat(s) trouvé(s)
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Loading -->
+      <div *ngIf="loading" class="text-center py-4">
+        <div class="spinner-border text-primary" role="status">
+          <span class="visually-hidden">Chargement...</span>
+        </div>
+        <p class="text-muted mt-2">Chargement de votre historique...</p>
+      </div>
+
+      <!-- Erreur -->
+      <div *ngIf="error && !loading" class="alert alert-danger">
+        <i class="fas fa-exclamation-triangle me-2"></i>
+        {{ error }}
+      </div>
+
+      <!-- Liste des rendez-vous -->
+      <div *ngIf="!loading && !error">
+        <div *ngIf="filteredRendezVous.length === 0" class="alert alert-info">
+          <i class="fas fa-info-circle me-2"></i>
+          Aucun rendez-vous trouvé avec les filtres actuels.
+        </div>
+
+        <div *ngFor="let rdv of filteredRendezVous" class="card mb-3">
+          <div class="card-header d-flex justify-content-between align-items-center">
+            <h6 class="mb-0">
+              Rendez-vous du {{ rdv.date | date:'dd/MM/yyyy' }} à {{ rdv.heure_debut | slice:0:5 }}
+            </h6>
+            <span [class]="getStatusClass(rdv.statut)">
+              {{ rdv.statut }}
+            </span>
+          </div>
+
+          <div class="card-body">
+            <div class="row">
+              <div class="col-md-6">
+                <p><strong>Médecin :</strong> Dr. {{ rdv.medecin?.prenom }} {{ rdv.medecin?.nom }}</p>
+                <p><strong>Spécialité :</strong> {{ rdv.medecin?.specialite }}</p>
+                <p><strong>Date :</strong> {{ rdv.date | date:'dd/MM/yyyy' }}</p>
+                <p><strong>Heure :</strong> {{ rdv.heure_debut | slice:0:5 }} - {{ rdv.heure_fin | slice:0:5 }}</p>
+              </div>
+              <div class="col-md-6">
+                <p><strong>Statut paiement :</strong> 
+                  <span [class]="rdv.statut_paiement === 'payé' ? 'badge bg-success' : 'badge bg-warning'">
+                    {{ rdv.statut_paiement }}
+                  </span>
+                </p>
+                <p><strong>Mode paiement :</strong> {{ rdv.mode_paiement }}</p>
+                <p><strong>Montant :</strong> {{ rdv.montant }} €</p>
+                <p><strong>Notes :</strong> {{ rdv.notes || 'Aucune' }}</p>
+              </div>
+            </div>
+
+            <!-- Actions -->
+            <div class="mt-3 d-flex gap-2">
+              <button class="btn btn-sm btn-outline-primary" 
+                      (click)="downloadJustificatif(rdv.id)">
+                <i class="fas fa-download me-1"></i>PDF
+              </button>
+
+              <button *ngIf="canCancel(rdv)" 
+                      class="btn btn-sm btn-outline-danger"
+                      (click)="annulerRendezVous(rdv.id)">
+                <i class="fas fa-times me-1"></i>Annuler
+              </button>
+
+              <button *ngIf="rdv.statut === 'annulé'" 
+                      class="btn btn-sm btn-outline-secondary"
+                      (click)="reprogrammer(rdv)">
+                <i class="fas fa-calendar-plus me-1"></i>Reprogrammer
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

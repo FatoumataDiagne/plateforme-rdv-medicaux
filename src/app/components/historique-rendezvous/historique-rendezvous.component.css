@@ -1,0 +1,60 @@
+.card {
+  transition: box-shadow 0.3s ease;
+  border: 1px solid #e9ecef;
+}
+
+.card:hover {
+  box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+}
+
+.badge {
+  font-size: 0.75em;
+  padding: 0.5em 0.75em;
+}
+
+.stats-card {
+  border: none;
+  border-radius: 10px;
+}
+
+.stats-card .card-title {
+  font-size: 1.8rem;
+  font-weight: bold;
+  margin-bottom: 0.5rem;
+}
+
+.stats-card .card-text {
+  font-size: 0.9rem;
+  opacity: 0.9;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .stats-card .card-title {
+    font-size: 1.5rem;
+  }
+  
+  .filters .col-md-3,
+  .filters .col-md-2 {
+    margin-bottom: 1rem;
+  }
+}
+
+/* Animation de chargement */
+.spinner-border {
+  width: 3rem;
+  height: 3rem;
+}
+
+/* Badges de statut */
+.bg-success { background-color: #28a745 !important; }
+.bg-warning { background-color: #ffc107 !important; color: #000 !important; }
+.bg-danger { background-color: #dc3545 !important; }
+.bg-info { background-color: #17a2b8 !important; }
+.bg-secondary { background-color: #6c757d !important; }
+
+/* Boutons d'action */
+.btn-sm {
+  padding: 0.25rem 0.5rem;
+  font-size: 0.875rem;
+}

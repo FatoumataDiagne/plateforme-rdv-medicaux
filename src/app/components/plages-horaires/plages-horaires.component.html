@@ -1,0 +1,104 @@
+<div class="plages-container">
+  <div class="plages-header">
+    <h1><i class="fas fa-clock"></i> Gestion des Plages Horaires</h1>
+    <p>Configurez vos disponibilités pour les rendez-vous</p>
+  </div>
+  
+  <!-- Messages d'alerte -->
+  <div class="alert-message success" *ngIf="message">
+    <i class="fas fa-check-circle"></i>
+    <span>{{ message }}</span>
+  </div>
+  <div class="alert-message error" *ngIf="erreur">
+    <i class="fas fa-exclamation-circle"></i>
+    <span>{{ erreur }}</span>
+  </div>
+  
+  <!-- Formulaire d'ajout -->
+  <div class="add-card">
+    <div class="card-header">
+      <i class="fas fa-plus-circle"></i>
+      <h3>Ajouter une nouvelle plage horaire</h3>
+    </div>
+    <div class="card-body">
+      <form (ngSubmit)="ajouterPlageHoraire()" class="plage-form">
+        <div class="form-row">
+          <div class="form-group">
+            <label for="jour_semaine" class="form-label">
+              <i class="fas fa-calendar-day"></i> Jour de la semaine
+            </label>
+            <select class="form-control" id="jour_semaine" [(ngModel)]="nouvellePlage.jour_semaine" name="jour_semaine" required>
+              <option *ngFor="let jour of joursSemaine" [value]="jour">{{ jour }}</option>
+            </select>
+          </div>
+          
+          <div class="form-group">
+            <label for="heure_debut" class="form-label">
+              <i class="fas fa-play-circle"></i> Heure de début
+            </label>
+            <input type="time" class="form-control" id="heure_debut" [(ngModel)]="nouvellePlage.heure_debut" name="heure_debut" required>
+          </div>
+          
+          <div class="form-group">
+            <label for="heure_fin" class="form-label">
+              <i class="fas fa-stop-circle"></i> Heure de fin
+            </label>
+            <input type="time" class="form-control" id="heure_fin" [(ngModel)]="nouvellePlage.heure_fin" name="heure_fin" required>
+          </div>
+          
+          <div class="form-group">
+            <button type="submit" class="add-btn">
+              <i class="fas fa-plus"></i> Ajouter
+            </button>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+  
+  <!-- Liste des plages horaires -->
+  <div class="plages-card">
+    <div class="card-header">
+      <i class="fas fa-list"></i>
+      <h3>Mes plages horaires</h3>
+      <span class="badge count-badge">{{plagesHoraires.length}} plage(s)</span>
+    </div>
+    <div class="card-body">
+      <div *ngIf="plagesHoraires.length === 0" class="empty-state">
+        <i class="fas fa-clock"></i>
+        <h4>Aucune plage horaire définie</h4>
+        <p>Ajoutez vos premières disponibilités en utilisant le formulaire ci-dessus</p>
+      </div>
+      
+      <div *ngIf="plagesHoraires.length > 0" class="plages-list">
+        <div class="plage-item" *ngFor="let plage of plagesHoraires">
+          <div class="plage-info">
+            <div class="plage-jour">
+              <i class="fas fa-calendar-day"></i>
+              <span>{{ plage.jour_semaine }}</span>
+            </div>
+            <div class="plage-heures">
+              <div class="heure-debut">
+                <i class="fas fa-play"></i>
+                <span>{{ plage.heure_debut }}</span>
+              </div>
+              <div class="heure-separator">
+                <i class="fas fa-arrow-right"></i>
+              </div>
+              <div class="heure-fin">
+                <i class="fas fa-stop"></i>
+                <span>{{ plage.heure_fin }}</span>
+              </div>
+            </div>
+          </div>
+          <div class="plage-actions">
+            <button class="delete-btn" (click)="supprimerPlageHoraire(plage.id!)">
+              <i class="fas fa-trash"></i>
+              Supprimer
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

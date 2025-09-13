@@ -1,1 +1,172 @@
-/* You can add global styles to this file, and also import other style files */
+/* D'ABORD les imports */
+@import '@angular/material/prebuilt-themes/indigo-pink.css';
+
+/* ENSUITE les directives Tailwind */
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* PUIS tes styles personnalisés */
+.medical-gradient {
+  background: linear-gradient(135deg, #2563eb 0%, #0ea5e9 100%);
+}
+
+.medical-card {
+  background: white;
+  border-radius: 0.75rem;
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+  border: 1px solid #e5e7eb;
+  padding: 1.5rem;
+  transition: box-shadow 0.3s ease;
+}
+
+.medical-card:hover {
+  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
+}
+
+.medical-btn-primary {
+  background: #2563eb;
+  color: white;
+  font-weight: 600;
+  padding: 0.75rem 1.5rem;
+  border-radius: 0.5rem;
+  transition: background-color 0.2s ease;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.medical-btn-primary:hover {
+  background: #1e40af;
+}
+
+/* Responsive design */
+@media (max-width: 768px) {
+  .medical-card {
+    padding: 1rem;
+  }
+}
+
+/* Personnalisation des icônes Material */
+.mat-icon {
+  width: 24px;
+  height: 24px;
+  font-size: 24px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+/* Styles de secours si Bootstrap ne charge pas */
+.container {
+  width: 100%;
+  padding-right: 15px;
+  padding-left: 15px;
+  margin-right: auto;
+  margin-left: auto;
+}
+
+@media (min-width: 576px) {
+  .container {
+    max-width: 540px;
+  }
+}
+
+@media (min-width: 768px) {
+  .container {
+    max-width: 720px;
+  }
+}
+
+@media (min-width: 992px) {
+  .container {
+    max-width: 960px;
+  }
+}
+
+@media (min-width: 1200px) {
+  .container {
+    max-width: 1140px;
+  }
+}
+/* Styles spécifiques selon le rôle */
+body.patient {
+  --primary-role-color: #3498db;
+  --secondary-role-color: #2980b9;
+}
+
+body.medecin {
+  --primary-role-color: #2ecc71;
+  --secondary-role-color: #27ae60;
+}
+
+body.admin {
+  --primary-role-color: #e74c3c;
+  --secondary-role-color: #c0392b;
+}
+
+/* Utilisation des variables CSS dans les composants */
+.role-specific-element {
+  background-color: var(--primary-role-color);
+  color: white;
+}
+
+/* Exemple: Badge dans le header */
+.user-role-badge.patient {
+  background: var(--primary-role-color);
+  color: white;
+}
+
+.user-role-badge.medecin {
+  background: var(--primary-role-color);
+  color: white;
+}
+
+.user-role-badge.admin {
+  background: var(--primary-role-color);
+  color: white;
+}
+/* styles.css ou styles.scss global */
+:root {
+  --primary-color: #3498db;
+  --success-color: #27ae60;
+  --warning-color: #f39c12;
+  --danger-color: #e74c3c;
+  --light-bg: #f8f9fa;
+  --border-color: #e9ecef;
+  --text-color: #2c3e50;
+}
+
+body {
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  background-color: #f5f7f9;
+  color: #333;
+}
+
+.navbar {
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.sidebar {
+  background-color: #2c3e50;
+  color: white;
+}
+
+.sidebar .nav-link {
+  color: rgba(255, 255, 255, 0.8);
+  transition: color 0.3s ease;
+}
+
+.sidebar .nav-link:hover,
+.sidebar .nav-link.active {
+  color: white;
+  background-color: rgba(255, 255, 255, 0.1);
+}
+
+.notification-badge {
+  background-color: var(--danger-color);
+  color: white;
+  border-radius: 50%;
+  padding: 2px 6px;
+  font-size: 0.75rem;
+  margin-left: 5px;
+}

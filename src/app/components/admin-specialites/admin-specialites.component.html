@@ -1,0 +1,112 @@
+<div class="admin-container">
+  <h2 class="page-title"><i class="fas fa-stethoscope me-2"></i>Gestion des Spécialités</h2>
+
+  <!-- Message d'erreur -->
+  <div *ngIf="errorMessage" class="alert alert-danger custom-alert">
+    <i class="fas fa-exclamation-circle"></i> {{ errorMessage }}
+  </div>
+
+  <!-- Search Bar / Formulaire d'ajout -->
+  <div class="search-container">
+    <div class="search-box">
+      <i class="fas fa-plus-circle search-icon"></i>
+      <input type="text" class="search-input" placeholder="Nom de la spécialité" 
+             [(ngModel)]="newSpecialite.nom">
+      <input type="text" class="search-input" placeholder="Description" 
+             [(ngModel)]="newSpecialite.description">
+      <button class="search-btn" (click)="createSpecialite()">
+        Ajouter
+      </button>
+    </div>
+  </div>
+
+  <!-- Loading -->
+  <div *ngIf="isLoading" class="loading-container">
+    <div class="spinner"></div>
+    <p>Chargement des spécialités...</p>
+  </div>
+
+  <!-- Liste des spécialités -->
+  <div *ngIf="!isLoading && specialites.length > 0" class="table-container">
+    <div class="table-responsive">
+      <table class="users-table">
+        <thead>
+          <tr>
+            <th>ID</th>
+            <th>Nom</th>
+            <th>Description</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let specialite of displayedSpecialites" class="user-row">
+            <td class="user-id">{{ specialite.id }}</td>
+
+            <!-- Nom -->
+            <td *ngIf="editingSpecialite?.id !== specialite.id" class="user-name">{{ specialite.nom }}</td>
+            <td *ngIf="editingSpecialite?.id === specialite.id" class="editing-field">
+              <input type="text" [(ngModel)]="editingSpecialite.nom" class="form-input" placeholder="Nom">
+            </td>
+
+            <!-- Description -->
+            <td *ngIf="editingSpecialite?.id !== specialite.id" class="user-email">{{ specialite.description || 'Aucune description' }}</td>
+            <td *ngIf="editingSpecialite?.id === specialite.id" class="editing-field">
+              <input type="text" [(ngModel)]="editingSpecialite.description" class="form-input" placeholder="Description">
+            </td>
+
+            <!-- Actions -->
+            <td class="user-actions">
+              <!-- Mode normal -->
+              <div class="action-buttons" *ngIf="editingSpecialite?.id !== specialite.id">
+                <button class="btn-edit" (click)="startEdit(specialite)">
+                  <i class="fas fa-edit"></i>
+                </button>
+                <button class="btn-delete" (click)="deleteSpecialite(specialite.id)">
+                  <i class="fas fa-trash"></i>
+                </button>
+              </div>
+
+              <!-- Mode édition -->
+              <div class="action-buttons" *ngIf="editingSpecialite?.id === specialite.id">
+                <button class="btn-save" (click)="updateSpecialite()">
+                  <i class="fas fa-save"></i>
+                </button>
+                <button class="btn-cancel" (click)="cancelEdit()">
+                  <i class="fas fa-times"></i>
+                </button>
+              </div>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- Pagination -->
+    <nav *ngIf="totalPages > 1" class="pagination-container">
+      <ul class="pagination">
+        <li class="page-item" [class.disabled]="currentPage === 1">
+          <a class="page-link prev" (click)="setPage(currentPage - 1)">
+            <i class="fas fa-chevron-left"></i> Précédent
+          </a>
+        </li>
+        
+        <li class="page-item" *ngFor="let page of pages" [class.active]="page === currentPage">
+          <a class="page-link" (click)="setPage(page)">{{ page }}</a>
+        </li>
+        
+        <li class="page-item" [class.disabled]="currentPage === totalPages">
+          <a class="page-link next" (click)="setPage(currentPage + 1)">
+            Suivant <i class="fas fa-chevron-right"></i>
+          </a>
+        </li>
+      </ul>
+    </nav>
+  </div>
+
+  <!-- No Specialites -->
+  <div *ngIf="!isLoading && specialites.length === 0" class="empty-state">
+    <i class="fas fa-stethoscope empty-icon"></i>
+    <h3>Aucune spécialité trouvée</h3>
+    <p>Commencez par ajouter une nouvelle spécialité</p>
+  </div>
+</div>

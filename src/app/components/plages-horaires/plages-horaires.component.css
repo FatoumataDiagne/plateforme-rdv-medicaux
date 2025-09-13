@@ -1,0 +1,303 @@
+/* Variables de couleurs */
+:root {
+  --primary: #3498db;
+  --primary-dark: #2980b9;
+  --secondary: #2ecc71;
+  --danger: #e74c3c;
+  --warning: #f39c12;
+  --light-bg: #f8f9fa;
+  --dark-text: #2c3e50;
+  --light-text: #7f8c8d;
+  --border-color: #e0e6ed;
+  --card-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+  --success-bg: #d4edda;
+  --success-text: #155724;
+  --error-bg: #f8d7da;
+  --error-text: #721c24;
+}
+
+/* Styles généraux */
+.plages-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 20px;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  color: var(--dark-text);
+}
+
+.plages-header {
+  text-align: center;
+  margin-bottom: 30px;
+  padding: 20px 0;
+}
+
+.plages-header h1 {
+  color: var(--primary);
+  font-size: 2.2rem;
+  margin-bottom: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+}
+
+.plages-header p {
+  color: var(--light-text);
+  font-size: 1.1rem;
+}
+
+/* Messages d'alerte */
+.alert-message {
+  padding: 15px 20px;
+  border-radius: 8px;
+  margin-bottom: 25px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.alert-message.success {
+  background-color: var(--success-bg);
+  color: var(--success-text);
+  border-left: 4px solid var(--secondary);
+}
+
+.alert-message.error {
+  background-color: var(--error-bg);
+  color: var(--error-text);
+  border-left: 4px solid var(--danger);
+}
+
+/* Cartes */
+.add-card, .plages-card {
+  background: white;
+  border-radius: 12px;
+  box-shadow: var(--card-shadow);
+  margin-bottom: 30px;
+  overflow: hidden;
+}
+
+.card-header {
+  background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+  color: white;
+  padding: 20px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.card-header h3 {
+  margin: 0;
+  font-weight: 600;
+  flex-grow: 1;
+}
+
+.count-badge {
+  background: rgba(255, 255, 255, 0.2);
+  padding: 6px 12px;
+  border-radius: 20px;
+  font-size: 0.9rem;
+  font-weight: 600;
+}
+
+.card-body {
+  padding: 25px;
+}
+
+/* Formulaire */
+.plage-form {
+  width: 100%;
+}
+
+.form-row {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 20px;
+  align-items: end;
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+}
+
+.form-label {
+  font-weight: 500;
+  margin-bottom: 8px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.form-control {
+  padding: 12px 15px;
+  border: 1px solid var(--border-color);
+  border-radius: 8px;
+  font-size: 1rem;
+  transition: all 0.3s ease;
+}
+
+.form-control:focus {
+  outline: none;
+  border-color: var(--primary);
+  box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.2);
+}
+
+.add-btn {
+  background: var(--secondary);
+  color: white;
+  border: none;
+  border-radius: 8px;
+  padding: 12px 20px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  height: 42px;
+}
+
+.add-btn:hover {
+  background: #27ae60;
+  transform: translateY(-2px);
+}
+
+/* Liste des plages horaires */
+.empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 40px 20px;
+  text-align: center;
+  color: var(--light-text);
+}
+
+.empty-state i {
+  font-size: 4rem;
+  margin-bottom: 15px;
+  opacity: 0.5;
+}
+
+.empty-state h4 {
+  margin: 0 0 10px 0;
+  color: var(--dark-text);
+}
+
+.plages-list {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.plage-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 20px;
+  border-radius: 10px;
+  background: var(--light-bg);
+  transition: all 0.3s ease;
+}
+
+.plage-item:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+}
+
+.plage-info {
+  display: flex;
+  align-items: center;
+  gap: 30px;
+}
+
+.plage-jour {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-weight: 600;
+  font-size: 1.1rem;
+  min-width: 150px;
+}
+
+.plage-heures {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+}
+
+.heure-debut, .heure-fin {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 15px;
+  background: white;
+  border-radius: 6px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+}
+
+.heure-separator {
+  color: var(--light-text);
+}
+
+.plage-actions {
+  display: flex;
+  gap: 10px;
+}
+
+.delete-btn {
+  background: var(--danger);
+  color: white;
+  border: none;
+  border-radius: 6px;
+  padding: 8px 15px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.delete-btn:hover {
+  background: #c0392b;
+}
+
+/* Responsive */
+@media (max-width: 992px) {
+  .form-row {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 768px) {
+  .plages-container {
+    padding: 15px;
+  }
+  
+  .form-row {
+    grid-template-columns: 1fr;
+  }
+  
+  .plage-item {
+    flex-direction: column;
+    gap: 15px;
+    text-align: center;
+  }
+  
+  .plage-info {
+    flex-direction: column;
+    gap: 15px;
+  }
+  
+  .plage-heures {
+    flex-direction: column;
+    gap: 10px;
+  }
+  
+  .plages-header h1 {
+    font-size: 1.8rem;
+  }
+}

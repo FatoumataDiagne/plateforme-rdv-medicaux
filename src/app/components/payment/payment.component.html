@@ -1,0 +1,194 @@
+<div class="payment-container">
+  <div class="row justify-content-center">
+    <div class="col-lg-8 col-xl-6">
+      <div class="payment-card">
+        <!-- Header -->
+        <div class="payment-header" [ngClass]="getHeaderClass()">
+          <div class="header-content">
+            <i class="header-icon" [ngClass]="{
+              'fas fa-check-circle': status === 'success',
+              'fas fa-times-circle': status === 'failed', 
+              'fas fa-spinner fa-spin': status === 'processing',
+              'fas fa-credit-card': status === 'en_attente'
+            }"></i>
+            <h2 class="header-title">{{ getHeaderTitle() }}</h2>
+          </div>
+        </div>
+
+        <!-- Card Body -->
+        <div class="payment-body">
+          <!-- Transaction Details -->
+          <div class="transaction-info">
+            <h5 class="info-title">
+              <i class="fas fa-receipt me-2"></i>
+              Détails de la transaction
+            </h5>
+            <!-- Remplacez la section transaction-info par : -->
+<div class="transaction-info">
+  <h5 class="info-title">
+    <i class="fas fa-receipt me-2"></i>
+    Détails de la transaction
+  </h5>
+  <div class="info-grid">
+    <div class="info-item">
+      <span class="info-label">Montant:</span>
+      <span class="info-value">{{ displayedAmount }} €</span>
+    </div>
+    <div class="info-item">
+      <span class="info-label">Rendez-vous:</span>
+      <span class="info-value">#{{ appointmentId || 'Chargement...' }}</span>
+    </div>
+    <div class="info-item">
+      <span class="info-label">Statut:</span>
+      <span class="info-value status-badge" [ngClass]="'status-' + status">
+        {{ getStatusText() }}
+      </span>
+    </div>
+  </div>
+</div>
+
+<!-- Et dans le bouton de paiement, remplacez par : -->
+<button type="submit" class="btn-pay" [disabled]="loading || !appointmentId || displayedAmount <= 0">
+  <i class="fas fa-lock me-2"></i>
+  Payer {{ displayedAmount }} €
+  <span *ngIf="!appointmentId || displayedAmount <= 0">(Données manquantes)</span>
+</button>
+
+          <!-- Status Messages -->
+          <div *ngIf="status === 'processing'" class="status-alert processing">
+            <div class="alert-content">
+              <div class="spinner-border text-warning" role="status">
+                <span class="visually-hidden">Loading...</span>
+              </div>
+              <span>Validation de votre paiement en cours...</span>
+            </div>
+          </div>
+
+          <div *ngIf="error" class="status-alert error">
+            <i class="fas fa-exclamation-triangle"></i>
+            <span>{{ error }}</span>
+            <button type="button" class="alert-close" (click)="error = ''">
+              <i class="fas fa-times"></i>
+            </button>
+          </div>
+
+          <div *ngIf="success" class="status-alert success">
+            <i class="fas fa-check-circle"></i>
+            <span>{{ success }}</span>
+          </div>
+
+          <!-- Payment Form -->
+          <form *ngIf="status === 'en_attente'" #paymentForm="ngForm" (ngSubmit)="processPayment()" class="payment-form">
+            <div class="form-section">
+              <h6 class="section-title">
+                <i class="fas fa-user me-2"></i>
+                Informations personnelles
+              </h6>
+              <div class="mb-3">
+                <label class="form-label">Titulaire de la carte</label>
+                <input type="text" class="form-control" 
+                       [(ngModel)]="paymentData.cardHolder" 
+                       name="cardHolder" 
+                       placeholder="JEAN DUPONT" 
+                       required>
+              </div>
+            </div>
+
+            <div class="form-section">
+              <h6 class="section-title">
+                <i class="fas fa-credit-card me-2"></i>
+                Informations de paiement
+              </h6>
+              <div class="mb-3">
+                <label class="form-label">Numéro de carte</label>
+                <input type="text" class="form-control" 
+                       [(ngModel)]="paymentData.cardNumber" 
+                       name="cardNumber" 
+                       placeholder="1234 5678 9012 3456" 
+                       (input)="formatCardNumber($event)"
+                       maxlength="19"
+                       required>
+              </div>
+
+              <div class="row g-3">
+                <div class="col-md-6">
+                  <label class="form-label">Date d'expiration</label>
+                  <input type="text" class="form-control" 
+                         [(ngModel)]="paymentData.expiryDate" 
+                         name="expiryDate" 
+                         placeholder="MM/AA" 
+                         (input)="formatExpiryDate($event)"
+                         maxlength="5"
+                         required>
+                </div>
+                <div class="col-md-6">
+                  <label class="form-label">Code de sécurité</label>
+                  <input type="text" class="form-control" 
+                         [(ngModel)]="paymentData.cvv" 
+                         name="cvv" 
+                         placeholder="CVV" 
+                         (input)="formatCvv($event)"
+                         maxlength="3"
+                         required>
+                  <small class="text-muted">3 chiffres au dos de votre carte</small>
+                </div>
+              </div>
+            </div>
+
+            <div class="payment-actions">
+              <button type="submit" class="btn-pay" [disabled]="loading">
+                <i class="fas fa-lock me-2"></i>
+                Payer {{ amount }} €
+              </button>
+              
+              <button type="button" class="btn-back" (click)="backToAppointments()">
+                <i class="fas fa-arrow-left me-2"></i>
+                Retour aux rendez-vous
+              </button>
+            </div>
+          </form>
+
+          <!-- Success State -->
+          <div *ngIf="status === 'success'" class="success-state">
+            <div class="success-icon">
+              <i class="fas fa-check-circle"></i>
+            </div>
+            <h4>Paiement Confirmé !</h4>
+            <p>Votre rendez-vous a été confirmé. Un justificatif a été téléchargé.</p>
+            <div class="countdown">Redirection dans {{ countdown }} secondes...</div>
+            <button class="btn btn-primary" (click)="backToAppointments()">
+              Retour aux rendez-vous
+            </button>
+          </div>
+
+          <!-- Failed State -->
+          <div *ngIf="status === 'failed'" class="failed-state">
+            <div class="failed-icon">
+              <i class="fas fa-times-circle"></i>
+            </div>
+            <h4>Paiement Échoué</h4>
+            <p>Une erreur s'est produite lors du traitement de votre paiement.</p>
+            <button class="btn btn-warning" (click)="retryPayment()">
+              <i class="fas fa-redo me-2"></i>
+              Réessayer le paiement
+            </button>
+          </div>
+        </div>
+
+        <!-- Footer -->
+        <div class="payment-footer" *ngIf="status === 'en_attente'">
+          <div class="security-badge">
+            <i class="fas fa-lock"></i>
+            <span>Paiement 100% sécurisé</span>
+          </div>
+          <div class="payment-methods">
+            <i class="fab fa-cc-visa"></i>
+            <i class="fab fa-cc-mastercard"></i>
+            <i class="fab fa-cc-amex"></i>
+            <i class="fab fa-cc-stripe"></i>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

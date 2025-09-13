@@ -1,0 +1,230 @@
+<div class="dashboard-container">
+  <!-- En-tête -->
+  <div class="dashboard-header">
+    <h1 class="dashboard-title">
+      <i class="fas fa-chart-line"></i>
+      Tableau de Bord Administratif
+    </h1>
+    <p class="dashboard-subtitle">Vue d'ensemble de votre plateforme médicale</p>
+  </div>
+
+  <!-- Indicateur de chargement -->
+  <div class="loading-section" *ngIf="isLoading">
+    <div class="loading-spinner">
+      <div class="spinner"></div>
+      <p>Chargement des données...</p>
+    </div>
+  </div>
+
+  <!-- Contenu principal -->
+  <div class="dashboard-content" *ngIf="!isLoading && stats">
+    <!-- Cartes de statistiques principales -->
+    <div class="stats-grid">
+      <div class="stat-card" *ngFor="let stat of [
+        { title: '👥 Utilisateurs Total', value: stats.general.total_users, color: 'primary', icon: 'users' },
+        { title: '👨‍⚕️ Médecins', value: stats.general.total_medecins, color: 'success', icon: 'user-md' },
+        { title: '👤 Patients', value: stats.general.total_patients, color: 'info', icon: 'user-injured' },
+        { title: '💰 Revenus Total', value: formatCurrency(stats.general.revenus_totaux), color: 'warning', icon: 'euro-sign' }
+      ]">
+        <div class="stat-card-inner stat-{{stat.color}}">
+          <div class="stat-icon">
+            <i class="fas fa-{{stat.icon}}"></i>
+          </div>
+          <div class="stat-content">
+            <h3 class="stat-value">{{stat.value}}</h3>
+            <p class="stat-title">{{stat.title}}</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Grille des statistiques détaillées -->
+    <div class="detailed-stats-grid">
+      <!-- Rendez-vous par statut -->
+      <div class="detail-card">
+        <div class="detail-card-header">
+          <i class="fas fa-calendar-alt"></i>
+          <h3>Rendez-vous par Statut</h3>
+        </div>
+        <div class="detail-card-body">
+          <div class="status-item confirmed">
+            <div class="status-info">
+              <span class="status-label">Confirmés</span>
+              <span class="status-value">{{stats.par_statut.rendezvous.confirme || 0}}</span>
+            </div>
+            <div class="status-bar">
+              <div class="status-progress" [style.width.%]="getPercentage(stats.par_statut.rendezvous.confirme, stats.general.total_rendezvous)"></div>
+            </div>
+          </div>
+          
+          <div class="status-item pending">
+            <div class="status-info">
+              <span class="status-label">En attente</span>
+              <span class="status-value">{{stats.par_statut.rendezvous.en_attente || 0}}</span>
+            </div>
+            <div class="status-bar">
+              <div class="status-progress" [style.width.%]="getPercentage(stats.par_statut.rendezvous.en_attente, stats.general.total_rendezvous)"></div>
+            </div>
+          </div>
+          
+          <div class="status-item cancelled">
+            <div class="status-info">
+              <span class="status-label">Annulés</span>
+              <span class="status-value">{{stats.par_statut.rendezvous.annule || 0}}</span>
+            </div>
+            <div class="status-bar">
+              <div class="status-progress" [style.width.%]="getPercentage(stats.par_statut.rendezvous.annule, stats.general.total_rendezvous)"></div>
+            </div>
+          </div>
+
+          <div class="status-total">
+            <span>Total: {{stats.general.total_rendezvous || 0}}</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Paiements par statut -->
+      <div class="detail-card">
+        <div class="detail-card-header">
+          <i class="fas fa-credit-card"></i>
+          <h3>Paiements par Statut</h3>
+        </div>
+        <div class="detail-card-body">
+          <div class="payment-item paid">
+            <div class="payment-info">
+              <span class="payment-label">Payés</span>
+              <span class="payment-value">{{stats.par_statut.paiements.paye || 0}}</span>
+            </div>
+            <div class="payment-icon">
+              <i class="fas fa-check-circle"></i>
+            </div>
+          </div>
+          
+          <div class="payment-item waiting">
+            <div class="payment-info">
+              <span class="payment-label">En attente</span>
+              <span class="payment-value">{{stats.par_statut.paiements.en_attente || 0}}</span>
+            </div>
+            <div class="payment-icon">
+              <i class="fas fa-clock"></i>
+            </div>
+          </div>
+          
+          <div class="payment-item refunded">
+            <div class="payment-info">
+              <span class="payment-label">Remboursés</span>
+              <span class="payment-value">{{stats.par_statut.paiements.rembourse || 0}}</span>
+            </div>
+            <div class="payment-icon">
+              <i class="fas fa-undo"></i>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Statistiques Financières -->
+      <div class="detail-card financial-card">
+        <div class="detail-card-header">
+          <i class="fas fa-chart-pie"></i>
+          <h3>Statistiques Financières</h3>
+        </div>
+        <div class="detail-card-body">
+          <div class="finance-item">
+            <div class="finance-icon online">
+              <i class="fas fa-laptop"></i>
+            </div>
+            <div class="finance-details">
+              <span class="finance-label">Paiements en ligne</span>
+              <span class="finance-value">{{stats.advanced.finances.paiements_en_ligne || 0}}</span>
+              <span class="finance-amount">{{formatCurrency(stats.advanced.finances.revenus_en_ligne)}}</span>
+            </div>
+          </div>
+          
+          <div class="finance-item">
+            <div class="finance-icon onsite">
+              <i class="fas fa-hospital"></i>
+            </div>
+            <div class="finance-details">
+              <span class="finance-label">Paiements sur place</span>
+              <span class="finance-value">{{stats.advanced.finances.paiements_sur_place || 0}}</span>
+              <span class="finance-amount">{{formatCurrency(stats.advanced.finances.revenus_sur_place)}}</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Top 3 des Spécialités les Plus Populaires -->
+      <div class="detail-card specialties-card">
+        <div class="detail-card-header">
+          <i class="fas fa-crown"></i>
+          <h3>Top 3 des Spécialités</h3>
+          <span class="subtitle">Classement par nombre de rendez-vous</span>
+        </div>
+        <div class="detail-card-body">
+          <div class="specialties-container" *ngIf="getTopSpecialties(stats.advanced.specialites).length > 0">
+            <div class="specialty-item" *ngFor="let spec of getTopSpecialties(stats.advanced.specialites); let i = index">
+              <div class="specialty-rank">
+                <div class="rank-badge" [class]="'rank-' + (i + 1)">
+                  <span class="rank-number">{{i + 1}}</span>
+                  <i class="fas fa-medal"></i>
+                </div>
+              </div>
+              
+              <div class="specialty-info">
+                <div class="specialty-name-container">
+                  <span class="specialty-name">{{spec.name}}</span>
+                  <div class="specialty-indicators">
+                    <span class="specialty-performance">
+                      <i class="fas fa-bolt" [class.high-performance]="spec.rendez_vous_count > 50" 
+                        [class.medium-performance]="spec.rendez_vous_count > 20 && spec.rendez_vous_count <= 50"
+                        [class.low-performance]="spec.rendez_vous_count <= 20"></i>
+                    </span>
+                  </div>
+                </div>
+                
+                <div class="specialty-stats">
+                  <div class="specialty-stat-item">
+                    <i class="fas fa-calendar-check"></i>
+                    <span class="specialty-stat-value">{{spec.rendez_vous_count || 0}}</span>
+                    <span class="specialty-stat-label">RDV</span>
+                  </div>
+                  
+                  <div class="specialty-stat-item">
+                    <i class="fas fa-user-md"></i>
+                    <span class="specialty-stat-value">{{spec.medecins_count || 0}}</span>
+                    <span class="specialty-stat-label">Médecins</span>
+                  </div>
+                  
+                  <div class="specialty-stat-item">
+                    <i class="fas fa-euro-sign"></i>
+                    <span class="specialty-stat-value">{{formatCurrency(spec.revenus || 0)}}</span>
+                    <span class="specialty-stat-label">Revenus</span>
+                  </div>
+                </div>
+                
+                <div class="specialty-progress" *ngIf="getMaxRdvValue(stats.advanced.specialites) > 0">
+                  <div class="progress-bar">
+                    <div class="progress-fill" 
+                         [style.width.%]="(spec.rendez_vous_count / getMaxRdvValue(stats.advanced.specialites)) * 100">
+                    </div>
+                  </div>
+                  <span class="progress-percentage">
+                    {{ ((spec.rendez_vous_count / getMaxRdvValue(stats.advanced.specialites)) * 100).toFixed(0) }}% du maximum
+                  </span>
+                </div>
+              </div>
+            </div>
+          </div>
+          
+          <div class="no-specialties" *ngIf="getTopSpecialties(stats.advanced.specialites).length === 0">
+            <div class="no-data-icon">
+              <i class="fas fa-stethoscope"></i>
+            </div>
+            <h4>Aucune spécialité enregistrée</h4>
+            <p>Les données des spécialités apparaîtront ici</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
