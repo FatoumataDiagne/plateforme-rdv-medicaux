@@ -10,10 +10,16 @@ class Kernel extends ConsoleKernel
     /**
      * Define the application's command schedule.
      */
-    protected function schedule(Schedule $schedule): void
-    {
-        // $schedule->command('inspire')->hourly();
-    }
+  protected function schedule(Schedule $schedule)
+{
+    $schedule->command('rappels:envoyer')->dailyAt('09:00');
+}
+
+protected $middleware = [
+    // ... autres middlewares
+    \App\Http\Middleware\AddCorsHeaders::class,
+     // Si vous utilisez le package fruitcake
+];
 
     /**
      * Register the commands for the application.
